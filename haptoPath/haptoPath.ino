@@ -49,7 +49,9 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-
+  for i = 1:4 {
+    Sense[i].updateMotor();
+  }
 }
 
 
