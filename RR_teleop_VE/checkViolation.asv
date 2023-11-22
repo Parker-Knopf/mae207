@@ -1,0 +1,45 @@
+% check feasible point violations 
+function violation  = checkViolation(target_x, target_y, tip_position_init,d,joint_values,cond_idx)
+    candidate_tip_position  = [target_x + tip_position_init(1);
+                               target_y + tip_position_init(2)];
+    theta1 = joint_values(1);
+    % if left sides are colliding 
+    if (cond_idx(1) || cond_idx(3))
+        quadrant = checkQuadrant(theta1);
+        if qudrant == 1
+
+        elseif quadrant == 2
+            
+        elseif quadrant == 3
+
+        elseif quadrant == 4
+
+        else 
+
+        end 
+
+    end 
+    % if right sides are colliding 
+    if (cond_idx(2) || cond_idx(4))
+
+    end
+
+end
+
+function quadrant = checkQuadrant(theta)
+   % links in Q1,
+    if (theta > 0 && theta < pi/2)
+        qu
+    % links in Q2, 
+    elseif (theta > pi/2 && theta < pi)
+    % links in Q3, 
+    elseif (theta > pi && theta < 3*pi/2)
+ 
+    % links in Q4 
+    elseif (theta1 > 3*pi/2 && theta1 < 2*pi)
+
+    % cases where the first link is at 0,pi/2,pi,3*pi/2,2*pi
+    else 
+
+    end 
+end

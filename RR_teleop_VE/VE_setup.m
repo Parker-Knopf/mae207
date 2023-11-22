@@ -21,4 +21,4 @@ target_center = [(1/3)*x_VE_lim;(1/2)*y_VE_lim];
 target_radius = 1;
 target = makeCircle(target_center,target_radius);
 %% define robot geometric parameters, subject to change %%%%%%%%%%%%%%%%%%%
-geometry = [20;20;[x_VE_lim/2;0]]; % L1 L2 base
+geometry = [15;15;[x_VE_lim/2;0]]; % L1 L2 base

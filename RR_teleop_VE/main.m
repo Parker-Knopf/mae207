@@ -6,7 +6,7 @@ run VE_setup.m
 %% test IK function and check collision with teleoperated input 
 figure
 % initial configuration %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-tip_position_init = [x_VE_lim/2;40];
+tip_position_init = [x_VE_lim/2;geometry(1)+geometry(2)];
 joint_values = inverseKinematics_RR(geometry,tip_position_init);
 link_shape = getLinkBoundary_RR(geometry,joint_values);
 d = dist2Obstacle(link_shape,obs,1);
@@ -21,16 +21,23 @@ myController = SharpDX.XInput.Controller(SharpDX.XInput.UserIndex.One);
 
 % user interaction with the VE
 joystick_limit = 32768;
-VE_limit = 20; % scale wrt to workspace size? 
+VE_limit = 50; % scale wrt to workspace size? 
 R2Sim_Ratio = VE_limit/joystick_limit;
 
 % signal processing 
-filter_window = 5;
+filter_window = 10;
 
 t_stable = 1e2;
 t_end = 1e5;
 
 k = 0;
+cond_idx = [false false false false];
+violation_left = [-1;-1]; % assume no violation 
+violation_right = [1;1]; % assume no violation 
+% 
+% link_shape_old = getLinkBoundary_RR(geometry,[pi/2; pi/2]);
+% [d_old,~] = dist2Obstacle(link_shape_old,obs,2);
+tip_position = tip_position_init;
 
 % control loop 
 for i = 1:t_end
@@ -57,7 +64,6 @@ for i = 1:t_end
      end 
 
      if i >= t_stable % do teleoperation task
-         disp('do teleoperation task!')
          k = k + 1;
          if k == 1
              % stablized positions
@@ -72,15 +78,24 @@ for i = 1:t_end
          target_y = double(rjoystick_offset.y(k) * R2Sim_Ratio);
     
          % do inverse kinematics and check collision 
+         if any(cond_idx == 1)
+             violation = checkViolation(target_x,target_y,tip_position_init,d,joint_values);
+             if violation
+                 continue 
+             end
+         end
          tip_position = [target_x; target_y] + tip_position_init;
-         plot(tip_position(1),tip_position(2),'ro');
          joint_values = inverseKinematics_RR(geometry,tip_position);
          link_shape = getLinkBoundary_RR(geometry,joint_values);
-         d = dist2Obstacle(link_shape,obs,1);
-         plotVE(geometry,link_shape,target,obs,d);
-         pause(0.01);
+         [d,stop_motion] = dist2Obstacle(link_shape,obs,0.5);
+         if stop_motion ~= 0 % update position only if motion is allowed 
+            cond_idx = (d.dist~=0);
+            continue
+         end
          clf;
+         plotVE(geometry,link_shape,target,obs,d); hold on
+         plot((target_x + tip_position_init(1)),(target_y + tip_position_init(2)),'ro')
+         pause(0.001);
      end   
 end
-
 %% test FK function and check collision 

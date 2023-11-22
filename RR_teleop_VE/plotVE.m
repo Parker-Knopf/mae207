@@ -57,7 +57,7 @@ if isstruct(d)
     % plot closest point (to the obstable) on the obstacle
     plot(d.obs(idx,1),d.obs(idx,2),'*','Color','k'); 
     % plot the vector connecting these points
-    plot([d.link(idx,1);d.obs(idx,1)],[d.link(idx,2);d.obs(idx,2)],'k');
+    % plot([d.link(idx,1);d.obs(idx,1)],[d.link(idx,2);d.obs(idx,2)],'k');
 end 
 
 grid on 

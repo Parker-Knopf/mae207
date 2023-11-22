@@ -25,7 +25,6 @@ feasible_pt = isinterior(workspace,tip_position(1),tip_position(2));
 if ~feasible_pt
     [idx,~,~] = nearestvertex(workspace,tip_position(1),tip_position(2));
     tip_position = workspace.Vertices(idx,:);
-    fprintf("workspace boundary!")
 end 
 
 % the tip position, need to account for the base
@@ -43,7 +42,7 @@ beta = acos(beta_arg);
 alpha_arg = (x^2+y^2+L1^2-L2^2)/(2*L1*sqrt(x^2+y^2));
 alpha = acos(alpha_arg);
 
-% calculate joint values, always assume lefty solution
+% calculate joint values, always assume righty solution
 theta1 = real(gamma - alpha);
 theta2 = real(pi - beta + theta1);
 
