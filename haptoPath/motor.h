@@ -63,6 +63,12 @@ class Motor {
       return count;
     }//end of getCount
 
+    void setRads(float val) {
+      // Set rads to reach
+
+      setCounts(val / radPerCount)
+    }//end of setRads
+
     float getRad() {
       //Return current rads
       return count * radPerCount;
