@@ -4,7 +4,8 @@
 class Sense : public Motor {
 
   float leverR; // Lever Arm radius of haptic actuator
-  double d = 0;;
+  double d = 0;
+  double theta_temp = 0;
   double threshold = 10; // boundry around the obstacle that is deemed unsafe [mm] 
   double theta_JND = 10; //minimally percieved angle [degrees]
 
