@@ -10,13 +10,13 @@ void setup() {
 
   double R = 25; //maximum radius of the CAM [mm]
   double r = 10; //minimum raidus of the CAM [mm]
-  double d_JND = 3; //JND of normal displacement into the skin [mm]
   double theta_c = atan(r/R);
-
+  double d_JND = 3; //JND of normal displacement into the skin [mm]
   double d_prime = d/cos(d_JND);
   double theta_JND = atan(d_prime/R);
+
   double zeroed_angle = 0; //[degrees]
-  double current_angle = 0; //[degrees]
+  double actual_angle = 0; //[degrees]
 }
 
 void calibrate() {
