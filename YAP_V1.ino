@@ -4,16 +4,15 @@ void setup() {
   // put your setup code here, to run once:
 
   double d = [];
-  double current_theta = [];
   double threshold = 10; // boundry around the obstacle that is deemed unsafe [mm] 
   double theta_JND = 10; //minimally percieved angle [degrees]
 
   double R = 25; //maximum radius of the CAM [mm]
   double r = 10; //minimum raidus of the CAM [mm]
   double theta_c = atan(r/R);
-  double d_JND = 3; //JND of normal displacement into the skin [mm]
-  double d_prime = d/cos(d_JND);
-  double theta_JND = atan(d_prime/R);
+  double d_JND = 3; //JND of normal displacement into the skin (minimum) [mm]
+  double d_prime = d/cos(d_JND); //we can chage displacement into the skin to be larger than d_JND
+  double theta_JND = atan(d_prime/R); //JND of angular displacement [degrees]
 
   double zeroed_angle = 0; //[degrees]
   double actual_angle = 0; //[degrees]
