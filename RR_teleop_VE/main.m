@@ -13,6 +13,43 @@ d = dist2Obstacle(link_shape,obs,1);
 plotVE(geometry,link_shape,target,obs,d);
 pause(0.01);
 
+
+%% offline debug  
+clf;
+% do inverse kinematics and check collision 
+target_x = 26 - tip_position_init(1);
+target_y = 28 - tip_position_init(2);
+
+tip_position = [target_x; target_y] + tip_position_init;
+plot(tip_position(1),tip_position(2),'ro');
+joint_values = inverseKinematics_RR(geometry,tip_position);
+link_shape = getLinkBoundary_RR(geometry,joint_values);
+[d,stop_motion] = dist2Obstacle(link_shape,obs,0.5);
+if stop_motion ~= 0 % update position only if motion is allowed
+    cond_idx = (d.dist~=0);
+end
+plotVE(geometry,link_shape,target,obs,d); hold on
+
+target_x = 27 - tip_position_init(1);
+target_y = 28 - tip_position_init(2);
+tip_position = [target_x; target_y] + tip_position_init;
+plot(tip_position(1),tip_position(2),'go');
+
+if any(cond_idx == 1)
+    violation = checkViolation(target_x,target_y,tip_position_init,...
+                               d,joint_values,cond_idx,link_shape);
+end
+plotVE(geometry,link_shape,target,obs,d); hold on
+
+target_x = 23 - tip_position_init(1);
+target_y = 25 - tip_position_init(2);
+tip_position = [target_x; target_y] + tip_position_init;
+plot(tip_position(1),tip_position(2),'ko');
+
+if any(cond_idx == 1)
+    violation = checkViolation(target_x,target_y,tip_position_init,...
+                               d,joint_values,cond_idx,link_shape);
+end
 %%  teleoperate 
 
 % set up controller %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
