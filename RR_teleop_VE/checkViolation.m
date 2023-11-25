@@ -1,15 +1,9 @@
 % check feasible point violations 
-function violation  = checkViolation(target_x,target_y,tip_position_init,...
-                                     d,joint_values,cond_idx,link_shape)
+function violation  = checkViolation(candidate_position,joint_2_position,d,...
+                                     joint_values,cond_idx,link_shape)
     theta1 = joint_values(1);
     violation = false; 
-
-    candidate_point = [target_x + tip_position_init(1);
-                       target_y  + tip_position_init(2)];
     
-    % NOTE: for the first link, instead of using the tip position, use the
-    % position of the first joint! (TODO)
-
     link1_x = link_shape(1).Vertices(:,1);
     link1_y = link_shape(1).Vertices(:,2);
    
@@ -19,15 +13,13 @@ function violation  = checkViolation(target_x,target_y,tip_position_init,...
     k1 = convhull(link1_x, link1_y);
     k2 = convhull(link2_x, link2_y);
 
-    % change this
-    link1_left_constr = candidate_point(2) - (d.m(1)*candidate_point(1) + d.b(1));
-    link2_left_constr = candidate_point(2) - (d.m(3)*candidate_point(1) + d.b(3));
-    % change this
-    link1_right_constr = candidate_point(2) - (d.m(2)*candidate_point(1) + d.b(2));
-    link2_right_constr = candidate_point(2) - (d.m(4)*candidate_point(1) + d.b(4));
+    link1_left_constr = joint_2_position(2) - (d.m(1)*joint_2_position(1) + d.b(1));
+    link2_left_constr = candidate_position(2) - (d.m(3)*candidate_position(1) + d.b(3));
+    link1_right_constr = joint_2_position(2) - (d.m(2)*joint_2_position(1) + d.b(2));
+    link2_right_constr = candidate_position(2) - (d.m(4)*candidate_position(1) + d.b(4));
 
     % account for thickness
-    in = inpolygon(candidate_point(1),candidate_point(2),...
+    in = inpolygon(candidate_position(1),candidate_position(2),...
                    [link1_x(k1)' link2_x(k2)'],[link1_y(k1)' link2_y(k2)']);
     violation_thickness = false;
     if in ~= 0

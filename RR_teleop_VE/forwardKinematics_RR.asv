@@ -25,11 +25,10 @@ theta2 = joint_values(2);
 joint_x_2 = L1*cos(theta1);
 joint_y_2 = L1*sin(theta1);
 
-if nargin > 2 
+if nvargin > 2
     query_joint_2 = varargin{1};
     if query_joint_2 == true
-        joint_2 = [joint_x_2;joint_y_2];
-        varagout = joint_2;
+        varagout = joint_
     end 
 end 
 

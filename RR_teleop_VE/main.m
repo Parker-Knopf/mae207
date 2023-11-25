@@ -36,9 +36,12 @@ tip_position = [target_x; target_y] + tip_position_init;
 plot(tip_position(1),tip_position(2),'go');
 
 if any(cond_idx == 1)
-    violation = checkViolation(target_x,target_y,tip_position_init,...
-                               d,joint_values,cond_idx,link_shape);
-end
+    candidate_position = [target_x + tip_position(1);
+                          target_y  + tip_position(2)];
+    [~,joint_2_position] = forwardKinematics_RR(geometry,joint_values,true);
+    violation = checkViolation(candidate_position,joint_2_position,d,...
+                               joint_values,cond_idx,link_shape);
+end 
 plotVE(geometry,link_shape,target,obs,d); hold on
 
 target_x = 23 - tip_position_init(1);
@@ -47,9 +50,13 @@ tip_position = [target_x; target_y] + tip_position_init;
 plot(tip_position(1),tip_position(2),'ko');
 
 if any(cond_idx == 1)
-    violation = checkViolation(target_x,target_y,tip_position_init,...
-                               d,joint_values,cond_idx,link_shape);
+    candidate_position = [target_x + tip_position(1);
+                          target_y  + tip_position(2)];
+    [~,joint_2_position] = forwardKinematics_RR(geometry,joint_values,true);
+    violation = checkViolation(candidate_position,joint_2_position,d,...
+                               joint_values,cond_idx,link_shape);
 end
+plotVE(geometry,link_shape,target,obs,d); hold on
 %%  teleoperate 
 
 % set up controller %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -114,7 +121,11 @@ for i = 1:t_end
     
          % do inverse kinematics and check collision 
          if any(cond_idx == 1)
-             violation = checkViolation(target_x,target_y,tip_position,d,joint_values);
+             candidate_position = [target_x + tip_position(1);
+                                   target_y  + tip_position(2)];
+             [~,joint_2_position] = forwardKinematics_RR(geometry,joint_values,true);
+             violation = checkViolation(candidate_position,joint_2_position,d,...
+                                        joint_values,cond_idx,link_shape);
              if violation
                  continue 
              end
