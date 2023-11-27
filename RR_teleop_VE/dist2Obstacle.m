@@ -16,29 +16,23 @@ function[d,stop_motion]  = dist2Obstacle(link_shape,obs,thres)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % unpack variables
-obs1 = obs(1);
-obs2 = obs(2);
-obs3 = obs(3);
-obs  = polyshape({obs1.Vertices(:,1),...
-                obs2.Vertices(:,1), ...
-                obs3.Vertices(:,1)},...
-                {obs1.Vertices(:,2),...
-                obs2.Vertices(:,2), ...
-                obs3.Vertices(:,2)});
+nObs = numel(obs);
+obsX = cell(1,nObs); obsY = cell(1,nObs);
+obsX_padded = cell(1,nObs); obsY_padded = cell(1,nObs);
+
+for i = 1:nObs
+    obs_tmp = obs(i);
+    obs_tmp_padded = polybuffer(obs(i),thres);
+    obsX{i} = obs_tmp.Vertices(:,1);
+    obsY{i} = obs_tmp.Vertices(:,2);
+    obsX_padded{i} = obs_tmp_padded.Vertices(:,1);
+    obsY_padded{i} = obs_tmp_padded.Vertices(:,2);
+end
+obs_padded = polyshape(obsX_padded,obsY_padded);
+obs = polyshape(obsX,obsY);
 
 link1 = link_shape(1);
 link2 = link_shape(2);
-
-% pad the obs by thres, create a global obstacle object 
-obs1_padded  = polybuffer(obs1,thres);
-obs2_padded  = polybuffer(obs2,thres);
-obs3_padded  = polybuffer(obs3,thres);
-obs_padded   = polyshape({obs1_padded.Vertices(:,1),...
-                          obs2_padded.Vertices(:,1), ...
-                          obs3_padded.Vertices(:,1)},...
-                         {obs1_padded.Vertices(:,2),...
-                          obs2_padded.Vertices(:,2), ...
-                          obs3_padded.Vertices(:,2)});
 
 % define line segments that represent each side of each link 
 link1_left  =  [link1.Vertices(1,:); link1.Vertices(2,:)]; 
@@ -121,12 +115,6 @@ if ~isempty(in4) % if right side of link 2 collides
     [row,col] = ind2sub([100,numel(obs.Vertices(:,2))],idx);
     d.dist(4) = sqrt(dist); d.link(4,:) = line_seg(row,:); d.obs(4,:) = obs.Vertices(col,:);
 end
-
-% % if no collision
-% if (isempty(in1) && isempty(in2) && isempty(in3) && isempty(in4))
-%     d = 0;
-% 
-% end
 
 end
 

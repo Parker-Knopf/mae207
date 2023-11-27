@@ -8,21 +8,31 @@ function violation  = checkViolation(candidate_position,joint_2_position,d,...
     constr_val = [link1_left_constr link2_left_constr];
     constr_val  = (constr_val > 0);
 
-    % if left collision
+    % if link1 left collision 
     left_collision = false;
-    if (cond_idx(1) || cond_idx(3))
+    if (cond_idx(1) == 1 || cond_idx(3) == 1)
         left_collision = true;
     end 
 
     % if right collision 
     right_collision = false;
-    if (cond_idx(2) || cond_idx(4))
+    if (cond_idx(2) == 1 || cond_idx(4) == 1)
         right_collision = true;
     end 
 
+    % assume both links are in collision 
     violation_link1 = checkCollision(left_collision, right_collision, link_quadrant(1), constr_val(1));
     violation_link2 = checkCollision(left_collision, right_collision, link_quadrant(2), constr_val(2));
 
+    % check which link is in collision
+    if (cond_idx(1) == 0 && cond_idx(2) == 0)
+        violation_link1 = false;
+    end
+    if (cond_idx(3) == 0 && cond_idx(4) == 0)
+        violation_link2 = false;
+    end
+
+    % is there a collision? 
     violation = violation_link1 | violation_link2;
   
 end
