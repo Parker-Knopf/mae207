@@ -21,14 +21,13 @@ function violation  = checkViolation(candidate_position,joint_2_position,d,...
     end 
 
     violation_link1 = checkCollision(left_collision, right_collision, link_quadrant(1), constr_val(1));
-    violation_link2 = checkCollision(left_collision, right_collision, link_quadrant(2), constr_val(2));
+    violation_link2 = checkCollision(left_collision, right_collision, link2_quadrant, constr_val(2));
 
     violation = violation_link1 | violation_link2;
   
 end
 
 function violation_val = checkCollision(left_collision,right_collision,quadrant,constr_val)
-   violation_val = false;
    % Q1 left collision, or Q3 right collision 
     if (left_collision && (quadrant == 1)) || (right_collision && (quadrant == 3))
         % toward collision: above link
@@ -36,6 +35,7 @@ function violation_val = checkCollision(left_collision,right_collision,quadrant,
             violation_val = true;
         end
     end 
+
     % Q1 right collision, or Q3 left collision
     if (left_collision && (quadrant == 3)) || (right_collision && (quadrant == 1))
         % towards collision: below link 
@@ -50,6 +50,7 @@ function violation_val = checkCollision(left_collision,right_collision,quadrant,
             violation_val = true;
         end
     end 
+
     % Q2 right collision, or Q4 left collision
     if (left_collision && (quadrant == 4)) || (right_collision && (quadrant == 2))
         % towards collision: above link

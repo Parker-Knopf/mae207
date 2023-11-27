@@ -32,6 +32,7 @@ t_end = 1e5;
 k = 0;
 cond_idx = [false false false false];
 tip_position = tip_position_init;
+link_quadrant = [];
 
 % control loop 
 for i = 1:t_end
@@ -76,7 +77,7 @@ for i = 1:t_end
              joint_values = inverseKinematics_RR(geometry,tip_position);
              [~,joint_2_position] = forwardKinematics_RR(geometry,joint_values,true);
              violation = checkViolation(tip_position,joint_2_position,d,...
-                                        robot_config_quadrant,cond_idx);
+                                        link_quadrant,cond_idx);
              if violation == true
                  continue
              end
@@ -88,7 +89,8 @@ for i = 1:t_end
          [d,stop_motion] = dist2Obstacle(link_shape,obs,0.5);
          if stop_motion ~= 0 % update position only if motion is allowed 
             cond_idx = (d.dist~=0);
-            robot_config_quadrant = checkQuadrant(joint_values(1));
+            link_quadrant(1) = checkQuadrant(joint_values(1));
+            link_quadrant(2) = checkQuadrant(joint_values(2));
             continue
          end
          clf;
