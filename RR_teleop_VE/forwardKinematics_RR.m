@@ -29,6 +29,7 @@ if nargin > 2
     query_joint_2 = varargin{1};
     if query_joint_2 == true
         joint_2 = [joint_x_2;joint_y_2];
+        joint_2 = joint_2 + base;
         varagout = joint_2;
     end 
 end 
