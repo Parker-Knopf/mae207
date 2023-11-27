@@ -19,7 +19,7 @@ class Sense : public Motor {
   double zeroed_angle = 0; //[degrees]
   double actual_angle = 0; //[degrees]
 
-public:
+  public:
 
     Sense(float r, byte pwm1, byte pwm2, byte pA, byte pB, int ratio):Motor(pwm1, pwm2, pA, pB, ratio) {
         leverR = r;
@@ -36,6 +36,6 @@ public:
         }
     }
 
-private:
+  private:
 
 };// end of Sense
