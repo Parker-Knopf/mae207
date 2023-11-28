@@ -5,7 +5,7 @@ char c = ",";
 char tempChar = "";
 String tempString = "";
 int i = 0;
-
+ 
 const int data_size = 4;
 int index[data_size];
 String subString[data_size];
@@ -15,8 +15,6 @@ public:
 serialM() {
   Serial.begin(baudeRate);
 }
-
-
 
 void readData() {
   if (Serial.available() >0) { //send data only when you recieve data
