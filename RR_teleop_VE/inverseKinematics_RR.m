@@ -46,6 +46,10 @@ alpha = acos(alpha_arg);
 theta1 = real(gamma - alpha);
 theta2 = real(pi - beta + theta1);
 
+% make sure that output is always between 0,2pi
+theta1 = wrapTo2Pi(theta1);
+theta2 = wrapTo2Pi(theta2);
+
 joint_values = [theta1; theta2];
 
 end

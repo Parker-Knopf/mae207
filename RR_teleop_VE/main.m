@@ -9,7 +9,7 @@ figure
 tip_position_init = [x_VE_lim/2;geometry(1)+geometry(2)];
 joint_values = inverseKinematics_RR(geometry,tip_position_init);
 link_shape = getLinkBoundary_RR(geometry,joint_values);
-d = dist2Obstacle(link_shape,obs,0.1);
+d = dist2Obstacle(link_shape,obs,0.5);
 plotVE(geometry,link_shape,target,obs,d);
 pause(0.01);
 %%  teleoperate 
@@ -79,17 +79,17 @@ for i = 1:t_end
             violation = checkViolation(tip_position,joint_2_position,d,...
                 link_quadrant,cond_idx);
             if violation == true
-                VE_limit = 0.01; % scale wrt to workspace size? 
+                VE_limit = 0.005; % scale wrt to workspace size? 
                 R2Sim_Ratio = VE_limit/joystick_limit;
                 continue
             end
             cond_idx = [false false false false];
-            VE_limit = 0.1; % scale wrt to workspace size? 
+            VE_limit = 0.25; % scale wrt to workspace size? 
             R2Sim_Ratio = VE_limit/joystick_limit;
         end
         [joint_values,tip_position] = inverseKinematics_RR(geometry,tip_position);
         link_shape = getLinkBoundary_RR(geometry,joint_values);
-        [d,stop_motion] = dist2Obstacle(link_shape,obs,0.1);
+        [d,stop_motion] = dist2Obstacle(link_shape,obs,0.5);
         if stop_motion ~= 0 % update position only if motion is allowed
             cond_idx = (d.dist~=0);
             link_quadrant(1) = checkQuadrant(joint_values(1));

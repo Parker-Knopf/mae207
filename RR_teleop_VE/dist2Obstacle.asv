@@ -138,14 +138,14 @@ if ~isempty(in5) % if the top of link 2 collides
     [row,col] = ind2sub([100,numel(obs.Vertices(:,2))],idx);
     d.dist(5) = sqrt(dist); d.link(5,:) = line_seg(row,:); d.obs(5,:) = obs.Vertices(col,:);
     % ignore collisions on the sides, if necessary
-    if d.dist(3) ~= 0 % if top and left collides for link 2
+    if d.dist(3) ~= 0 % 
         if d.dist(5) < d.dist(3)
             d.dist(3) = 0; d.link(3,:) = 0; d.obs(3,:) = 0;
         else
             d.dist(5) = 0; d.link(5,:) = 0; d.obs(5,:) = 0;
         end
     end 
-    if d.dist(4) ~= 0 % if top and right collides for link 2
+    if d.dist(4) ~= 0
         if d.dist(5) < d.dist(4)
             d.dist(4) = 0; d.link(4,:) = 0; d.obs(4,:) = 0;
         else 
@@ -153,6 +153,7 @@ if ~isempty(in5) % if the top of link 2 collides
         end 
     end 
 end
+
 % account for cases double collide 
 % cond_idx = (d.dist ~= 0);
 % if sum(cond_idx) > 1

@@ -11,6 +11,9 @@ function quadrant = checkQuadrant(theta)
     % links in Q4 
     elseif (theta >= 3*pi/2 && theta <= 2*pi)
         quadrant = 4;
+    else
+        disp(theta);
     end 
+
 end
 
