@@ -66,7 +66,7 @@ class Motor {
     void setRads(float val) {
       // Set rads to reach
 
-      setCounts(val / radPerCount)
+      setCounts(val / radPerCount);
     }//end of setRads
 
     float getRad() {
