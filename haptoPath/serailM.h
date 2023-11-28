@@ -11,9 +11,12 @@ int index[data_size];
 String subString[data_size];
 
 public:
-void setup() {
+
+serialM() {
   Serial.begin(baudeRate);
 }
+
+
 
 void readData() {
   if (Serial.available() >0) { //send data only when you recieve data
