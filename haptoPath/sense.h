@@ -33,7 +33,7 @@ class Sense : public Motor {
             theta_temp  = 2*theta_JND*(PI/180);
             setRads(theta_temp);//set max pressure
         }
-    }
+    }//end of updateMotor
 
   private:
 

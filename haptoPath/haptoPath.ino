@@ -1,10 +1,11 @@
 #include "sense.h"
+#include "serialM.h"
 
 // Constants
 
 const int gearRatio = 380;
 const byte senseCount = 4; // Number of actuators
-const float leverR = 0.025; // Lever arm of haptic actuator [m]
+const float leverR[senseCount] = [0.025, 0.025, 0.025, 0.025]; // Lever arm of haptic actuator [m]
 
 // Pin Definitions
 
@@ -31,8 +32,8 @@ const byte d2m2 = 15; // Distal Motor 2 Diode 2
 const byte pwm[senseCount][2] = {{p1m1, p1m2}, {p2m1, p2m2}, {d1m1, d1m2}, {d2m1, d2m2}};
 
 // Objects
-Sense sense[senseCount] = {Sense(leverR, pwm[0][0], pwm[0][1], en[0][0], en[0][1], gearRatio), Sense(leverR, pwm[1][0], pwm[1][1], en[1][0], en[1][1], gearRatio), Sense(leverR, pwm[2][0], pwm[2][1], en[2][0], en[2][1], gearRatio), Sense(leverR, pwm[3][0], pwm[3][1], en[3][0], en[3][1], gearRatio)};
-
+Sense sense[senseCount] = {Sense(leverR[0], pwm[0][0], pwm[0][1], en[0][0], en[0][1], gearRatio), Sense(leverR[1], pwm[1][0], pwm[1][1], en[1][0], en[1][1], gearRatio), Sense(leverR[2], pwm[2][0], pwm[2][1], en[2][0], en[2][1], gearRatio), Sense(leverR[3], pwm[3][0], pwm[3][1], en[3][0], en[3][1], gearRatio)};
+SerialM comun = SerialM(senseCount);
 
 void setup() {
 
@@ -49,8 +50,20 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  for (int i = 0; i<4;i++) {
-    sense[i].updateMotor();
+  comun.readData(); // Read the data from the Serail communication
+
+  // Zero motors
+  if (comun.D_zero != -1) {
+    // do stuff to zero the motor using the current motor posotion and the motor index
+    // comun.D[i] (Current motor position)
+    // comun.D_zero (Current motor index to zero)
+
+    // After operation reset D_zero
+    comun.D_zero = -1;
+  }
+  
+  for (byte i = 0; i < senseCount ; i++) {
+    sense[i].updateMotor(comun.D[i]);
   }
 }
 

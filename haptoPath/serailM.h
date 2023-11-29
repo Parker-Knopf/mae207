@@ -1,62 +1,75 @@
-class serialM {
-double baudeRate = 115600;
-double D = [];
-char c = ",";
-char tempChar = "";
-String tempString = "";
-int i = 0;
- 
-const int data_size = 4;
-int index[data_size];
-String subString[data_size];
+class SerialM {
 
-public:
+  // Serial Protocol
+  double baudeRate = 115600;
+  const char c = " | "; // Serial Data seperator
+  const char d = "D:" // Data Indicator
+  const char z = "Z:" // Zero Indicator
+  const byte indSize = 2; // Size of serial Protocol indicator
+  String rawData;
+  const int dataSize;
+  
+  // Data
+  int dataIndex[dataSize + 1];
+  String data[dataSize];
 
-serialM() {
-  Serial.begin(baudeRate);
-}
+  public:
 
-void readData() {
-  if (Serial.available() >0) { //send data only when you recieve data
-      tempString = Serial.read();
-    
-    if (tempString.indexOf(c) != -1) {
-      findIndex(tempString);
-      separate(tempString, index);
-      setParameters();
+    double D[dataSize]; // Heights of Motors [m]
+    int D_zero = -1; // Height offsets of motors [m]
 
-    }
-  }
+    SerialM(byte senseCount) {
+      dataSize = senseCount;
+      Serial.begin(baudeRate);
+    }//end of constructor
 
-float getData(int index) {
-  return D[index];
-
-}
-private:
-
-    void findIndex(String s) {
-        index = s.indexOf(c); 
-      }
-
-    void separate(String s, int index) {
-      for (int i = 0; i <4; i++){
-        if (i == 0) {
-          subString[i] = s.substring(0, (index(i)));
-          
+    bool readData() {
+      if (Serial.available() > 0) { //send data only when you recieve data
+          rawData = Serial.read();
+        
+        if (rawData.indexOf(c) != -1 && rawData.indexOf(d) == 0) {
+          findIndex();
+          parseData();
+          return true;
         }
-        else {
-          subString[i] = s.substring((index(i-1)+1), (index(i))
+        else if (rawData.indexOf(z) == 0) {
+          parseZero();
         }
+        else {return false;}
+      else {return false;}
+    }//end of readData
+
+    float getData(int index) {
+      // If an index given is outside Serial Protocol
+      if (index < 0 || index >= dataSize) {
+        return -1;
       }
+      return D[index];
+    }//end of getData
 
-      
-    }
+  private:
 
-    void setParameters() {
-      for(int i = 0; i<4; i++){
-        D[i] = substring[i].toInt();
-      }
+      void findIndex() {
+          dataIndex[0] = indSize;
+          dataIndex[dataSize + 1] = sizeof(rawData) + 1;
+          int index[dataSize - 1] = rawData.indexOf(c);
 
-    }
+          for (byte i = 1; i < dataSize -1; i++) {
+            dataIndex[i] = index[i-1];
+          }
+        }//end of findIndex
 
-};//end of serialM
+      void parseData() {
+        for (byte i = 0; i < dataSize; i++){
+          data[i] = rawData.substring((index[i]), (index[i+1])
+          D[i] = data[i].toFloat();
+        }
+      }//end of parseData
+
+      void parseZero() {
+        D_zero = substring(indSize, sizeof(rawData)).toInt;
+        if (D_zero < 0 || D_zero > dataSize) {
+          D_zero = -1
+        }
+      }//end of parseZero
+};//end of SerialM
