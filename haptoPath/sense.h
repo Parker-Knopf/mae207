@@ -7,7 +7,6 @@ class Sense : public Motor {
   double d = 0;
   double theta_temp = 0;
   double threshold = 10; // boundry around the obstacle that is deemed unsafe [mm] 
-  double theta_JND = 10; //minimally percieved angle [degrees]
 
   double Rc = 25; //maximum radius of the CAM [mm]
   double rc = 10; //minimum raidus of the CAM [mm]
@@ -27,12 +26,12 @@ class Sense : public Motor {
 
     void updateMotor() {
         if (d < threshold/2) {
-            theta_temp = theta_JND*(math.PI/180);
-            setRad(theta_temp); //set medium pressure
+            theta_temp = theta_JND*(PI/180);
+            setRads(theta_temp); //set medium pressure
         }
         else if (d < threshold){
-            theta_temp  = 2*theta_JND*(math.PI/180)
-            setRad(theta_temp);//set max pressure
+            theta_temp  = 2*theta_JND*(PI/180);
+            setRads(theta_temp);//set max pressure
         }
     }
 
