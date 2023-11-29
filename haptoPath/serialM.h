@@ -29,7 +29,7 @@ class SerialM {
         if (rawData.indexOf(d) == 0) {
           findIndex();
           parseData();
-          Serial.println(D);
+          Serial.println(D[1]); // Only for testing purposes
           return true;
         }
         else if (rawData.indexOf(z) == 0) {

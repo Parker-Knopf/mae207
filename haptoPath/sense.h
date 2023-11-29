@@ -18,6 +18,10 @@ class Sense : public Motor {
   double zeroed_angle = 0; //[degrees]
   double actual_angle = 0; //[degrees]
 
+  float hOffsetAng = 0;
+  float hOffset = 0;
+  float theta = 0;
+
   public:
 
     Sense(float r, byte pwm1, byte pwm2, byte pA, byte pB, int ratio):Motor(pwm1, pwm2, pA, pB, ratio) {
@@ -46,7 +50,7 @@ class Sense : public Motor {
 
       int oldCount = -100;
       while (oldCount != getCount()) {
-        oldCount = getCount()
+        oldCount = getCount();
       }
       zero(); // Zero encoder
     }//end of absZero
