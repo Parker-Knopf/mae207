@@ -57,6 +57,7 @@ void loop() {
     // do stuff to zero the motor using the current motor posotion and the motor index
     // comun.D[i] (Current motor position)
     // comun.D_zero (Current motor index to zero)
+    sense[comun.D_zero].setZero(comun.D[comun.D_zero]);
 
     // After operation reset D_zero
     comun.D_zero = -1;

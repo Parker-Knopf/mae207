@@ -35,6 +35,11 @@ class Sense : public Motor {
         }
     }//end of updateMotor
 
+    void setZero() {
+      // Set zero values
+      zero(); // Zero encoder 
+    }//end of setZero
+
   private:
 
 };// end of Sense
