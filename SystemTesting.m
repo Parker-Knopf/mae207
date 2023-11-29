@@ -1,11 +1,20 @@
 clear all; close all; clc;
 
+% Constants
 senseCount = 4;
+
+% States
 states = ["M1", "M2", "M3", "M4", "Z1", "Z2", "Z3", "Z4", "E"];
 state = states(1);
+
+% Logic
 senseNum = 0;
 senseCounts = zeros(4,1);
 senseVals = zeros(4,1);
+
+% Serial
+baud = 115600;
+serialportlist("available");
 
 while (state ~= "E")
     menu(senseCount);
@@ -70,6 +79,9 @@ end
 
 function sendData(type, msg)
     package = strjoin([type, ": ", msg]);
-    disp(package);
-%     Serial.send(package) % IDK something like this
+%     disp(package);
+
+    baud = 115600;
+    comun = serialport("COM1", baud);
+    write(comun, package)
 end
