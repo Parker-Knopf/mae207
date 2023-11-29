@@ -47,6 +47,7 @@ class Motor {
       // Zero count values
       count = 0;
       setCount = 0;
+      run(false);
     }//end of zero
 
     void setCounts(int val) {

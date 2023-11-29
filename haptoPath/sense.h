@@ -24,7 +24,7 @@ class Sense : public Motor {
         leverR = r;
     }//end of constructor 
 
-    void updateMotor() {
+    void updateMotor(float h) {
         if (d < threshold/2) {
             theta_temp = theta_JND*(PI/180);
             setRads(theta_temp); //set medium pressure
@@ -35,10 +35,21 @@ class Sense : public Motor {
         }
     }//end of updateMotor
 
-    void setZero() {
-      // Set zero values
-      zero(); // Zero encoder 
+    void setHZero() {
+      // Set H offset values
+      hOffsetAng = theta;
+      hOffset = 0; // code to find this
     }//end of setZero
+
+    void absZero() {
+      setRads(-2*PI);
+
+      int oldCount = -100;
+      while (oldCount != getCount()) {
+        oldCount = getCount()
+      }
+      zero(); // Zero encoder
+    }//end of absZero
 
   private:
 

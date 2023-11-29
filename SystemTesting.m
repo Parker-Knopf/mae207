@@ -14,7 +14,8 @@ senseVals = zeros(4,1);
 
 % Serial
 baud = 115600;
-serialportlist("available");
+serialportlist("available"); % Commet out once serial port known and changed on line 86
+return % Commet out once serial port known and changed on line 86
 
 while (state ~= "E")
     menu(senseCount);
@@ -84,4 +85,6 @@ function sendData(type, msg)
     baud = 115600;
     comun = serialport("COM1", baud);
     write(comun, package)
+
+    disp(read(comun))
 end

@@ -4,8 +4,8 @@
 // Constants
 
 const int gearRatio = 380;
-const byte senseCount = 4; // Number of actuators
-const float leverR[senseCount] = [0.025, 0.025, 0.025, 0.025]; // Lever arm of haptic actuator [m]
+const static byte senseCount = 4; // Number of actuators
+const float leverR[senseCount] = {0.025, 0.025, 0.025, 0.025}; // Lever arm of haptic actuator [m]
 
 // Pin Definitions
 
@@ -33,7 +33,7 @@ const byte pwm[senseCount][2] = {{p1m1, p1m2}, {p2m1, p2m2}, {d1m1, d1m2}, {d2m1
 
 // Objects
 Sense sense[senseCount] = {Sense(leverR[0], pwm[0][0], pwm[0][1], en[0][0], en[0][1], gearRatio), Sense(leverR[1], pwm[1][0], pwm[1][1], en[1][0], en[1][1], gearRatio), Sense(leverR[2], pwm[2][0], pwm[2][1], en[2][0], en[2][1], gearRatio), Sense(leverR[3], pwm[3][0], pwm[3][1], en[3][0], en[3][1], gearRatio)};
-SerialM comun = SerialM(senseCount);
+SerialM comun = SerialM();
 
 void setup() {
 
@@ -46,6 +46,11 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(en[2][1]), en3B, CHANGE);
   attachInterrupt(digitalPinToInterrupt(en[3][0]), en4A, CHANGE);
   attachInterrupt(digitalPinToInterrupt(en[3][1]), en4B, CHANGE);
+
+  // Absolute Zero all Sense
+  for (byte i = 0; i < senseCount; i++) {
+    sense[i].absZero();
+  }
 }
 
 void loop() {
@@ -57,7 +62,7 @@ void loop() {
     // do stuff to zero the motor using the current motor posotion and the motor index
     // comun.D[i] (Current motor position)
     // comun.D_zero (Current motor index to zero)
-    sense[comun.D_zero].setZero(comun.D[comun.D_zero]);
+    sense[comun.D_zero].setHZero();
 
     // After operation reset D_zero
     comun.D_zero = -1;
