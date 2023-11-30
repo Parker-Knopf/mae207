@@ -9,14 +9,21 @@ function[d,stop_motion]  = dist2Obstacle(link_shape,obs,thres)
 % thres (1x1), the threshold for "almost collide" 
 
 % OUTPUT:
-% d (4x1) [d1;d2;d3;d4], "distance" to obstacle of each side of each link, d1
-% and d2 denotes distances on the left and right side of link 1, whereas
-% d3,d4 denotes distances on the left and right side of link 2 
+% d struct with 3 5 fields with array of size [4x1], 
+% field descriptions:
+% d.dist, representing the distance between the link and perimeter of an obstacle
+% d.dist(1) and d.dist(2) denotes distances on the left and right side of link 1, 
+% d.dist(3), d.dist(4) denotes distances on the left and right side of link 2,
+% d.link, the location of the collision/s on the link/s, 
+% d.obs, the location of the collision/s ont he obstable/s, 
+% d.m, slope of the intersecting line/s (between the link and obstacle), 
+% d.b, y intercept of the interesecting line
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 % TODOs
 % shorten the collision checking code 
+% need to debug still 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % unpack variables
@@ -41,12 +48,9 @@ link2 = link_shape(2);
 % define line segments that represent each side of each link 
 link1_left  =  [link1.Vertices(1,:); link1.Vertices(2,:)]; 
 link1_right =  [link1.Vertices(3,:); link1.Vertices(4,:)]; 
-
 link2_left  =  [link2.Vertices(1,:); link2.Vertices(2,:)]; 
 link2_right =  [link2.Vertices(3,:); link2.Vertices(4,:)]; 
-
 link2_top     = [link2.Vertices(2,:); link2.Vertices(3,:)];
-
 
 [d.m(1),d.b(1)] = fitLine(link1_left(:,1),link1_left(:,2));
 [d.m(2),d.b(2)] = fitLine(link1_right(:,1),link1_right(:,2));
@@ -110,7 +114,7 @@ if ~isempty(in3) % if left side of link 2 collides
     dist = (obs.Vertices(:,2)' - line_seg(:,2)).^2  +  (obs.Vertices(:,1)' - line_seg(:,1)).^2;
     [dist,idx] = min(dist,[],'all','linear');
     [row,col] = ind2sub([100,numel(obs.Vertices(:,2))],idx);
-    d.dist(3) = sqrt(dist); d.link(3,:) = line_seg(row,:); d.obs(3,:) = obs.Vertices(col,:);
+    d.dist(3) = sqrt(dist); d.link(3,:) = line_seg(row,:);  d.obs(3,:) = obs.Vertices(col,:);
 end
 if ~isempty(in4) % if right side of link 2 collides 
     line_seg = linspace(in4(1,1),in4(end,1))';
@@ -136,7 +140,7 @@ if ~isempty(in5) % if the top of link 2 collides
     dist = (obs.Vertices(:,2)' - line_seg(:,2)).^2  +  (obs.Vertices(:,1)' - line_seg(:,1)).^2;
     [dist,idx] = min(dist,[],'all','linear');
     [row,col] = ind2sub([100,numel(obs.Vertices(:,2))],idx);
-    d.dist(5) = sqrt(dist); d.link(5,:) = line_seg(row,:); d.obs(5,:) = obs.Vertices(col,:);
+    d.dist(5) = sqrt(dist); d.link(5,:) = line_seg(row,:);  d.obs(5,:) = obs.Vertices(col,:);
     % ignore collisions on the sides, if necessary
     if d.dist(3) ~= 0 % if top and left collides for link 2
         if d.dist(5) < d.dist(3)
@@ -153,15 +157,6 @@ if ~isempty(in5) % if the top of link 2 collides
         end 
     end 
 end
-% account for cases double collide 
-% cond_idx = (d.dist ~= 0);
-% if sum(cond_idx) > 1
-%     min_dist = min(d.dist(d.dist > 0));
-%     idx = (d.dist ~= min_dist);
-%     d.dist(idx) = 0;
-%     d.link(idx,:) = 0;
-%     d.obs(idx,:) = 0;
-% end
 
 end
 

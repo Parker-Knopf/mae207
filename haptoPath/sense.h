@@ -4,19 +4,14 @@
 class Sense : public Motor {
 
   float leverR; // Lever Arm radius of haptic actuator
-  double d = 0;
-  double theta_temp = 0;
-  double threshold = 10; // boundry around the obstacle that is deemed unsafe [mm] 
+  float theta_temp = 0;
+  float threshold = 10; // boundry around the obstacle that is deemed unsafe [mm] 
 
-  double Rc = 25; //maximum radius of the CAM [mm]
-  double rc = 10; //minimum raidus of the CAM [mm]
-  double theta_c = atan(rc/Rc);
-  double d_JND = 3; //JND of normal displacement into the skin (minimum) [mm]
-  double d_prime = d/cos(d_JND); //we can chage displacement into the skin to be larger than d_JND
-  double theta_JND = atan(d_prime/Rc); //JND of angular displacement [degrees]
-
-  double zeroed_angle = 0; //[degrees]
-  double actual_angle = 0; //[degrees]
+  float Rc = 25; //maximum radius of the CAM [mm]  
+  float d_JND = 3; //JND of normal displacement into the skin (minimum) [mm]
+  
+  float d_prime = 0; //we can chage displacement into the skin to be larger than d_JND
+  float theta_JND = 0; //JND of angular displacement [degrees]
 
   float hOffsetAng = 0;
   float hOffset = 0;
@@ -29,12 +24,12 @@ class Sense : public Motor {
     }//end of constructor 
 
     void updateMotor(float h) {
-        if (d < threshold/2) {
-            theta_temp = theta_JND*(PI/180);
+        if (h < threshold/2) {
+            theta_temp = getThetaJND()*(PI/180); //convert to radians
             setRads(theta_temp); //set medium pressure
         }
-        else if (d < threshold){
-            theta_temp  = 2*theta_JND*(PI/180);
+        else if (h < threshold){
+            theta_temp  = 2*getThetaJND()*(PI/180); //convert to radians
             setRads(theta_temp);//set max pressure
         }
     }//end of updateMotor
@@ -56,5 +51,15 @@ class Sense : public Motor {
     }//end of absZero
 
   private:
+
+    float getThetaJND() {
+      hOffsetAng = atan(hOffset/Rc);
+      d_prime = d_JND/cos(d_JND); //we can chage displacement into the skin to be larger than d_JND
+      theta_JND = atan(d_prime/Rc); //JND of angular displacement [degrees]
+      if (theta_JND > 90) { //bound theta so it doesn't go past 90 degrees
+          theta_JND = 90;
+      }
+      return theta_JND;
+    }
 
 };// end of Sense
