@@ -52,6 +52,7 @@ class Sense : public Motor {
     float motorTheta(float h) {
       hTotal = h_offset + h; //d_JND should vary based on the data input 
       theta_JND = atan(hTotal/Rc); //JND of angular displacement [degrees]
+      //theta_JND = 2*atan(hTotal/2*Rc); //using the chord approach
       if (theta_JND > 90) { //bound theta so it doesn't go past 90 degrees
           theta_JND = 90;
       }
