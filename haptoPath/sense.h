@@ -26,15 +26,14 @@ class Sense : public Motor {
     }//end of constructor 
 
     void updateMotor(float h) {
-        //coeff = coeff(h);
-        theta = motorTheta(b)*(PI/180); //convert to radians
-        setRads(theta); //set medium pressure
+        theta = motorTheta(h)*(PI/180); //convert to radians
+        setRads(theta); // set motor angle
     }//end of updateMotor
 
     void setHZero() {
       // Set H offset values
-      hOffsetAng = getRads()*(PI/180); // get the angle of motor 
-      hOffset = Rc*sin(hOffsetAng); // using trig to get hOffset using small angle approximation 
+      hOffsetAng = getRads()*(PI/180); // get the angle of motor that's being guided by joystick
+      hOffset = Rc*sin(hOffsetAng); // small angle approximation 
       hMax = Rc + hOffset; // maximum indentation into skin accounting for hOffset (90 degrees)
     }//end of setZero
 
