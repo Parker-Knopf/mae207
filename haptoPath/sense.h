@@ -34,7 +34,7 @@ class Sense : public Motor {
       // Set H offset values
       hOffsetAng = getRads()*(PI/180); // get the angle of motor that's being guided by joystick
       hOffset = Rc*sin(hOffsetAng); // small angle approximation 
-      hMax = Rc + hOffset; // maximum indentation into skin accounting for hOffset (90 degrees)
+      
     }//end of setZero
 
     void absZero() {
@@ -50,6 +50,7 @@ class Sense : public Motor {
   private:
   
     float motorTheta(float h) {
+      // might need to do some linear mapping between h and actual indentation
       hTotal = h_offset + h; //d_JND should vary based on the data input 
       theta_JND = atan(hTotal/Rc); //JND of angular displacement [degrees]
       //theta_JND = 2*atan(hTotal/2*Rc); //using the chord approach
