@@ -69,7 +69,7 @@ class SerialM {
       }//end of parseData
 
       void parseZero() {
-        D_zero = rawData.substring(indSize, sizeof(rawData)).toInt();
+        D_zero = rawData.substring(indSize, rawData.length()).toInt();
         if (D_zero < 0 || D_zero > dataSize) {
           D_zero = -1;
         }

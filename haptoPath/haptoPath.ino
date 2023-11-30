@@ -63,7 +63,7 @@ void loop() {
     // comun.D[i] (Current motor position)
     // comun.D_zero (Current motor index to zero)
     sense[comun.D_zero].setHZero();
-
+    //sense[comun.D_zero].updateMotor(comun.D[i]);
     // After operation reset D_zero
     comun.D_zero = -1;
   }

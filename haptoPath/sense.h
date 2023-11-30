@@ -4,17 +4,19 @@
 class Sense : public Motor {
 
   float leverR; // Lever Arm radius of haptic actuator
-  float theta_temp = 0;
+  float theta = 0;
   float threshold = 10; // boundry around the obstacle that is deemed unsafe [mm] 
+  float hTotal = 0;
 
   float Rc = 25; //maximum radius of the CAM [mm]  
   float d_JND = 3; //JND of normal displacement into the skin (minimum) [mm]
   
-  float d_prime = 0; //we can chage displacement into the skin to be larger than d_JND
   float theta_JND = 0; //JND of angular displacement [degrees]
 
   float hOffsetAng = 0;
   float hOffset = 0;
+  float hTotal = 0;
+  float hMax = 0; 
   float theta = 0;
 
   public:
@@ -24,20 +26,16 @@ class Sense : public Motor {
     }//end of constructor 
 
     void updateMotor(float h) {
-        if (h < threshold/2) {
-            theta_temp = getThetaJND()*(PI/180); //convert to radians
-            setRads(theta_temp); //set medium pressure
-        }
-        else if (h < threshold){
-            theta_temp  = 2*getThetaJND()*(PI/180); //convert to radians
-            setRads(theta_temp);//set max pressure
-        }
+        //coeff = coeff(h);
+        theta = motorTheta(b)*(PI/180); //convert to radians
+        setRads(theta); //set medium pressure
     }//end of updateMotor
 
     void setHZero() {
       // Set H offset values
-      hOffsetAng = theta;
-      hOffset = 0; // code to find this
+      hOffsetAng = getRads()*(PI/180); // get the angle of motor 
+      hOffset = Rc*sin(hOffsetAng); // using trig to get hOffset using small angle approximation 
+      hMax = Rc + hOffset; // maximum indentation into skin accounting for hOffset (90 degrees)
     }//end of setZero
 
     void absZero() {
@@ -51,11 +49,10 @@ class Sense : public Motor {
     }//end of absZero
 
   private:
-
-    float getThetaJND() {
-      hOffsetAng = atan(hOffset/Rc);
-      d_prime = d_JND/cos(d_JND); //we can chage displacement into the skin to be larger than d_JND
-      theta_JND = atan(d_prime/Rc); //JND of angular displacement [degrees]
+  
+    float motorTheta(float h) {
+      hTotal = h_offset + h; //d_JND should vary based on the data input 
+      theta_JND = atan(hTotal/Rc); //JND of angular displacement [degrees]
       if (theta_JND > 90) { //bound theta so it doesn't go past 90 degrees
           theta_JND = 90;
       }
