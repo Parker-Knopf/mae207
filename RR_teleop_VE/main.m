@@ -18,12 +18,12 @@ pause(0.01);
 controllerLibrary = NET.addAssembly([pwd '\SharpDX.XInput.dll']);
 myController = SharpDX.XInput.Controller(SharpDX.XInput.UserIndex.One);
 
-% user interaction with the VE
+% user interaction with the VE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 joystick_limit = 32768;
 VE_limit = 0.25; % scale wrt to workspace size? 
 R2Sim_Ratio = VE_limit/joystick_limit;
 
-% signal processing 
+% signal processing %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 filter_window = 1;
 
 t_stable = 1e3;
@@ -53,7 +53,7 @@ for i = 1:t_end
         rjoystick.y(i) = mean(rjoystick.y(i-filter_window+1:i));  
     end
 
-    if i >= t_stable % do teleoperation task
+    if i >= t_stable % do teleoperation task %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         k = k + 1;
         if k == 1
             fprintf("start teleoperation\n");
@@ -69,10 +69,10 @@ for i = 1:t_end
         target_y = double(rjoystick_offset.y(k) * R2Sim_Ratio);
 
         tip_position = [target_x; target_y] + tip_position;
-        plot(tip_position(1),tip_position(2),'go'); hold on
-        pause(0.0001);
+        plot(tip_position(1),tip_position(2),'go'); hold on;  pause(0.0001);
+       
 
-        % do inverse kinematics and check collision
+        % do inverse kinematics and check collision %%%%%%%%%%%%%%%%%%%%%%%
         if any(cond_idx == 1)
             joint_values = inverseKinematics_RR(geometry,tip_position);
             [~,joint_2_position] = forwardKinematics_RR(geometry,joint_values,true);
@@ -89,7 +89,15 @@ for i = 1:t_end
         end
         [joint_values,tip_position] = inverseKinematics_RR(geometry,tip_position);
         link_shape = getLinkBoundary_RR(geometry,joint_values);
-        [d,stop_motion] = dist2Obstacle(link_shape,obs,0.5);
+        [d,stop_motion] = dist2Obstacle(link_shape,obs,0.5); 
+
+        %%%%%%%%% distance to obstacles %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        fprintf("L1L dist to obstacle:%d\n",d.dist(1)); % link 1 left 
+        fprintf("L1R dist to obstacle:%d\n",d.dist(2)); % link 1 right 
+        fprintf("L2L dist to obstacle:%d\n",d.dist(3)); % link 2 left 
+        fprintf("L2R dist to obstacle:%d\n",d.dist(4)); % link 2 right 
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
         if stop_motion ~= 0 % update position only if motion is allowed
             cond_idx = (d.dist~=0);
             link_quadrant(1) = checkQuadrant(joint_values(1));
@@ -99,7 +107,6 @@ for i = 1:t_end
         clf;
         plot(tip_position(1),tip_position(2),'ro'); hold on
         plotVE(geometry,link_shape,target,obs,d); pause(0.0001);
-
     end
 end
 %% test FK function and check collision 
