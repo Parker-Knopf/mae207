@@ -52,13 +52,14 @@ class Sense : public Motor {
 
   private:
 
-    void getThetaJND() {
+    float getThetaJND() {
       hOffsetAng = atan(hOffset/Rc);
       d_prime = d_JND/cos(d_JND); //we can chage displacement into the skin to be larger than d_JND
       theta_JND = atan(d_prime/Rc); //JND of angular displacement [degrees]
       if (theta_JND > 90) { //bound theta so it doesn't go past 90 degrees
           theta_JND = 90;
       }
+      return theta_JND;
     }
 
 };// end of Sense
