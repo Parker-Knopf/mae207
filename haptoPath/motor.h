@@ -70,10 +70,10 @@ class Motor {
       setCounts(val / radPerCount);
     }//end of setRads
 
-    float getRad() {
+    float getRads() {
       //Return current rads
       return count * radPerCount;
-    }//end of getRad
+    }//end of getRads
 
     void encoderA() {
       // ISR Function A for encoder counts

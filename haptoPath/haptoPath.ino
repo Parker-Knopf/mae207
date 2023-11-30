@@ -5,7 +5,7 @@
 
 const int gearRatio = 380;
 const static byte senseCount = 4; // Number of actuators
-const float leverR[senseCount] = {0.025, 0.025, 0.025, 0.025}; // Lever arm of haptic actuator [m]
+const float leverR[senseCount] = {25, 25, 25, 25}; // Lever arm of haptic actuator [mm]
 
 // Pin Definitions
 
@@ -57,6 +57,7 @@ void loop() {
   // put your main code here, to run repeatedly:
   comun.readData(); // Read the data from the Serail communication
 
+  Serial.println("--");
   // Zero motors
   if (comun.D_zero != -1) {
     // do stuff to zero the motor using the current motor posotion and the motor index
@@ -70,6 +71,8 @@ void loop() {
   for (byte i = 0; i < senseCount ; i++) {
     sense[i].updateMotor(comun.D[i]);
   }
+
+  delay(500);
 }
 
 

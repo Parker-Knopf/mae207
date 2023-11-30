@@ -3,38 +3,42 @@
 
 class Sense : public Motor {
 
-  float leverR; // Lever Arm radius of haptic actuator
-  float theta = 0;
+  // Constants
+  float Rc; //Radius of the CAM [mm]  
+
+  // Logic
   float threshold = 10; // boundry around the obstacle that is deemed unsafe [mm] 
-  float hTotal = 0;
-
-  float Rc = 25; //maximum radius of the CAM [mm]  
   float d_JND = 3; //JND of normal displacement into the skin (minimum) [mm]
+  float hMax = 0;
   
-  float theta_JND = 0; //JND of angular displacement [degrees]
-
+  // Offset Vals
   float hOffsetAng = 0;
   float hOffset = 0;
   float hTotal = 0;
-  float hMax = 0; 
   float theta = 0;
+  float thetaTemp = 0;
+  float thetaMax = PI/2;
 
   public:
 
     Sense(float r, byte pwm1, byte pwm2, byte pA, byte pB, int ratio):Motor(pwm1, pwm2, pA, pB, ratio) {
-        leverR = r;
+        Rc = r;
     }//end of constructor 
 
     void updateMotor(float h) {
-        theta = motorTheta(h)*(PI/180); //convert to radians
-        setRads(theta); // set motor angle
+      theta = motorTheta(h);
+      setRads(theta); // set motor angle
+      Serial.println(theta);
     }//end of updateMotor
 
     void setHZero() {
       // Set H offset values
-      hOffsetAng = getRads()*(PI/180); // get the angle of motor that's being guided by joystick
-      hOffset = Rc*sin(hOffsetAng); // small angle approximation 
-      
+      hOffsetAng = getRads(); // get the angle of motor that's being guided by joystick
+      hOffset = Rc*sin(hOffsetAng); // small angle approximation
+      Serial.print("OFFTHETA: ");
+      Serial.println(hOffsetAng);
+      Serial.print("OFFH: ");
+      Serial.println(hOffset);
     }//end of setZero
 
     void absZero() {
@@ -51,13 +55,19 @@ class Sense : public Motor {
   
     float motorTheta(float h) {
       // might need to do some linear mapping between h and actual indentation
-      hTotal = h_offset + h; //d_JND should vary based on the data input 
-      theta_JND = atan(hTotal/Rc); //JND of angular displacement [degrees]
-      //theta_JND = 2*atan(hTotal/2*Rc); //using the chord approach
-      if (theta_JND > 90) { //bound theta so it doesn't go past 90 degrees
-          theta_JND = 90;
+      hTotal = hOffset + h; //absolute h [mm]
+      thetaTemp = asin(hTotal/Rc); //[rads]
+      return bound(thetaTemp);
+    }//end of motorTheta
+
+    float bound(float thetaTemp) {
+      if (thetaTemp > thetaMax) { //bound theta so it doesn't go past 90 degrees
+        thetaTemp = thetaMax;
       }
-      return theta_JND;
-    }
+      else if (theta < 0) {
+        thetaTemp = 0;
+      }
+      return thetaTemp;
+    }//end of bound
 
 };// end of Sense
