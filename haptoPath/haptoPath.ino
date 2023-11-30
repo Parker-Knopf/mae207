@@ -60,12 +60,12 @@ void loop() {
   // Zero motors
   if (comun.D_zero != -1) {
     // do stuff to zero the motor using the current motor posotion and the motor index
-    // comun.D[i] (Current motor position)
-    // comun.D_zero (Current motor index to zero)
     
-    while true {
-      sense[comun.D_zero].setHZero();
-      sense[comun.D_zero].updateMotor(comun.D[i]);
+    sense[comun.D_zero].setHZero(); // This should not be in another loop as it should only compute once
+
+    while true { // We are already in a loop (main loop) IF comun.D_zero != 1, then we do something once, not many times
+      sense[comun.D_zero].setHZero(); // Moved outside loop
+      sense[comun.D_zero].updateMotor(comun.D[i]); // This already updates below every time, no need to have here
       if () {
           break;
       }
