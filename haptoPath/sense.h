@@ -37,14 +37,16 @@ class Sense : public Motor {
     }//end of setZero
 
     void absZero() {
-      setRads(-2*PI);
       maxPower(100);
+      setRads(-2*PI);
 
       int oldCount = -100;
       while (oldCount != getCount()) {
         oldCount = getCount();
-        delay(100);
+        delay(200);
+        Serial.println("-");
       }
+      Serial.println("ZERO");
       maxPower(255);
       zero(); // Zero encoder
     }//end of absZero

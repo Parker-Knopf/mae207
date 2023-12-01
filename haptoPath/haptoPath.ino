@@ -23,8 +23,8 @@ const byte en[senseCount][2] = {{p1enA, p1enB}, {p2enA, p2enB}, {d1enA, d1enB}, 
 // Motor Power
 const byte p1m1 = 12; // Inside Forearm (0) Diode 1
 const byte p1m2 = 11; // Inside Forearm (0) Diode 2
-const byte p2m1 = 9; // Outside Forearm (1) Diode 1
-const byte p2m2 = 10; // Outside Forearm (1) Diode 2
+const byte p2m1 = 10; // Outside Forearm (1) Diode 1
+const byte p2m2 = 9; // Outside Forearm (1) Diode 2
 const byte d1m1 = 14; // Inside Upper arm (2) Diode 1
 const byte d1m2 = 15; // Inside Upper arm (2) Diode 2
 const byte d2m1 = 18; // Outside Upper arm (3) Diode 1
