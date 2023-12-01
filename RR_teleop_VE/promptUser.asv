@@ -1,0 +1,26 @@
+function mode = promptUser() 
+%prompt the user to calibrate the motors
+disp("Move the joystick to have CAM flushed with the skin");
+
+
+senseCount = 4;
+
+% States
+states = ["Z1", "Z2", "Z3", "Z4"];
+
+%display menue of options 
+menu(senseCount)
+state = input("Enter your action: ", 's'); % user selects option
+senseNum = str2num(state(end));
+
+if ismember(state, states)
+    zeroSense(senseNum);
+else
+    disp("------")
+    disp("Not a state try agian...")
+    disp("------")
+end
+
+return state;
+
+end

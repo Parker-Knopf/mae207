@@ -1,0 +1,5 @@
+function moveSense(senseVals)
+    % mode can either be D or Z
+    sendData(dataMsg, senseVals))
+  
+end
