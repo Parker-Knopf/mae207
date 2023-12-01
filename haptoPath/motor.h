@@ -17,7 +17,7 @@ class Motor {
   float prevE = 0;
   float eintegral = 0;
   const byte bound = 1;
-  const byte power = 255;
+  byte power = 255;
 
   // Pins
   byte pinA;
@@ -28,7 +28,7 @@ class Motor {
 
   public:
 
-    float gearRatio = 1000; // Polulu Motor (1000:1)
+    float gearRatio = 380; // Polulu Motor (380:1)
     float radPerCount = (2*PI) / (12 * gearRatio); // Polulu Miro-metal motor
 
     Motor(byte pwm1, byte pwm2, byte pA, byte pB, int ratio) {
@@ -53,6 +53,8 @@ class Motor {
     void setCounts(int val) {
       // Set counts to reach
 
+      // Serial.print("COUNT: ");
+      // Serial.println(count);
       // Serial.print("SETCOUNT VALUE: ");
       // Serial.println(val);
       setCount = val;
@@ -66,7 +68,6 @@ class Motor {
 
     void setRads(float val) {
       // Set rads to reach
-
       setCounts(val / radPerCount);
     }//end of setRads
 
@@ -74,6 +75,10 @@ class Motor {
       //Return current rads
       return count * radPerCount;
     }//end of getRads
+
+    void maxPower(byte val) {
+      power = val;
+    }//end of setPower
 
     void encoderA() {
       // ISR Function A for encoder counts
@@ -151,8 +156,6 @@ class Motor {
     void run(bool state) {
       // Turn on/off Motor
 
-      // Serial.print("COUNT: ");
-      // Serial.println(count);
       if (state) {setPower(controler());}
       else {setPower(0);}
     }//end of run
@@ -161,8 +164,10 @@ class Motor {
       // Set the singal to the motor controller
       if (pwm > power) {pwm = power;}
       else if (pwm < 0) {pwm = 0;}
+      // Serial.println(pwm);
 
       if (setCount > count) {
+        // Serial.println(pwm);
         analogWrite(pinPWM1, pwm);
         analogWrite(pinPWM2, 0);
       }
@@ -176,7 +181,7 @@ class Motor {
       }
     }//end of setPower
 
-    byte controler() {
+    int controler() {
       // PID controler
       
       // Time change
@@ -197,6 +202,6 @@ class Motor {
       eintegral += e * dT;
 
       // Control Signal
-      return fabs(kp*e +kd*dedt + ki*eintegral);
+      return abs(kp*e +kd*dedt + ki*eintegral);
     }//end of controler
 };//end of Encoder

@@ -10,25 +10,25 @@ const float leverR[senseCount] = {25, 25, 25, 25}; // Lever arm of haptic actuat
 // Pin Definitions
 
 // Encoders
-const byte p1enA = 20; // Proximal Motor 1 Encoder A
-const byte p1enB = 21; // Proximal Motor 1 Encoder B
-const byte p2enA = 7; // Proximal Motor 2 Encoder A
-const byte p2enB = 8; // Proximal Motor 2 Encoder B
-const byte d1enA = 22; // Distal Motor 1 Encoder A
-const byte d1enB = 23; // Distal Motor 1 Encoder B
-const byte d2enA = 5; // Distal Motor 2 Encoder A
-const byte d2enB = 6; // Distal Motor 2 Encoder B
+const byte p1enA = 20; // Inside Forearm (0) Encoder A
+const byte p1enB = 21; // Inside Forearm (0) Encoder B
+const byte p2enA = 22; // Outside Forearm (1) Encoder A
+const byte p2enB = 23; // Outside Forearm (1) Encoder B
+const byte d1enA = 7; // Inside Upper arm (2) Encoder A
+const byte d1enB = 8; // Inside Upper arm (2) Encoder B
+const byte d2enA = 5; // Outside Upper arm (3) Encoder A
+const byte d2enB = 6; // Outside Upper arm (3) Encoder B
 const byte en[senseCount][2] = {{p1enA, p1enB}, {p2enA, p2enB}, {d1enA, d1enB}, {d2enA, d2enB}};
 
 // Motor Power
-const byte p1m1 = 10; // Proximal Motor 1 Diode 1
-const byte p1m2 = 9; // Proximal Motor 1 Diode 2
-const byte p2m1 = 19; // Proximal Motor 2 Diode 1
-const byte p2m2 = 18; // Proximal Motor 2 Diode 2
-const byte d1m1 = 11; // Distal Motor 1 Diode 1
-const byte d1m2 = 12; // Distal Motor 1 Diode 2
-const byte d2m1 = 14; // Distal Motor 2 Diode 1
-const byte d2m2 = 15; // Distal Motor 2 Diode 2
+const byte p1m1 = 12; // Inside Forearm (0) Diode 1
+const byte p1m2 = 11; // Inside Forearm (0) Diode 2
+const byte p2m1 = 9; // Outside Forearm (1) Diode 1
+const byte p2m2 = 10; // Outside Forearm (1) Diode 2
+const byte d1m1 = 14; // Inside Upper arm (2) Diode 1
+const byte d1m2 = 15; // Inside Upper arm (2) Diode 2
+const byte d2m1 = 18; // Outside Upper arm (3) Diode 1
+const byte d2m2 = 19; // Outside Upper arm (3) Diode 2
 const byte pwm[senseCount][2] = {{p1m1, p1m2}, {p2m1, p2m2}, {d1m1, d1m2}, {d2m1, d2m2}};
 
 // Objects
@@ -57,13 +57,11 @@ void loop() {
   // put your main code here, to run repeatedly:
   comun.readData(); // Read the data from the Serail communication
 
-  Serial.println("--");
   // Zero motors
   if (comun.D_zero != -1) {
     // do stuff to zero the motor using the current motor posotion and the motor index
-    // comun.D[i] (Current motor position)
-    // comun.D_zero (Current motor index to zero)
     sense[comun.D_zero].setHZero();
+    comun.D[comun.D_zero] = 0;
     // After operation reset D_zero
     comun.D_zero = -1;
   }
@@ -72,7 +70,6 @@ void loop() {
     sense[i].updateMotor(comun.D[i]);
   }
 
-  delay(500);
 }
 
 

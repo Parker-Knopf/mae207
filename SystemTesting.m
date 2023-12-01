@@ -26,7 +26,7 @@ while (state ~= "E")
         if ismember(state, states(1:senseCount))
             [senseCounts, senseVals] = moveSense(senseNum, senseCounts, senseVals);
         elseif ismember(state, states(senseCount+1:2*senseCount))
-            zeroSense(senseNum)
+            zeroSense(senseNum-1)
         end
     else
         disp("------")
@@ -74,17 +74,16 @@ function zeroSense(num)
 end
 
 function msg = dataMsg(senseVals)
-    sep = " | ";
-    msg = strjoin([num2str(senseVals(1)), sep, num2str(senseVals(2)), sep, num2str(senseVals(3)), sep, num2str(senseVals(4)), sep,]);
+    sep = "|";
+    msg = strjoin([num2str(senseVals(1)), sep, num2str(senseVals(2)), sep, num2str(senseVals(3)), sep, num2str(senseVals(4))], "");
 end
 
 function sendData(type, msg)
-    package = strjoin([type, ": ", msg]);
-%     disp(package);
+    package = strjoin([type, ": ", msg], "");
+    disp(package);
 
     baud = 115600;
     comun = serialport("COM8", baud);
     writeline(comun, package)
-%   D: 1|2|3|4
-    disp(readline(comun))
+%     D: 1|2|3|4
 end

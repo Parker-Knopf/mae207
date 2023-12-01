@@ -28,26 +28,24 @@ class Sense : public Motor {
     void updateMotor(float h) {
       theta = motorTheta(h);
       setRads(theta); // set motor angle
-      Serial.println(theta);
     }//end of updateMotor
 
     void setHZero() {
       // Set H offset values
       hOffsetAng = getRads(); // get the angle of motor that's being guided by joystick
       hOffset = Rc*sin(hOffsetAng); // small angle approximation
-      Serial.print("OFFTHETA: ");
-      Serial.println(hOffsetAng);
-      Serial.print("OFFH: ");
-      Serial.println(hOffset);
     }//end of setZero
 
     void absZero() {
       setRads(-2*PI);
+      maxPower(100);
 
       int oldCount = -100;
       while (oldCount != getCount()) {
         oldCount = getCount();
+        delay(100);
       }
+      maxPower(255);
       zero(); // Zero encoder
     }//end of absZero
 
