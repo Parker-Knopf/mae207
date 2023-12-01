@@ -32,8 +32,10 @@ link2 = polyshape(x_coord,...
                   y_coord);
 
 % define the rotation ref points (around the joints)
-refpoint = [(x_coord(1)+x_coord(end))/2;
-            (y_coord(1)+y_coord(end))/2];
+% refpoint = [(x_coord(1)+x_coord(end))/2;
+%             (y_coord(1)+y_coord(end))/2];
+ refpoint = [x_coord(1);
+             y_coord(1)];
 
 % compute position of the second joint 
 joint_x_2 = L1*cos(theta1);
