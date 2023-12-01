@@ -14,10 +14,10 @@ const byte p1enA = 20; // Inside Forearm (0) Encoder A
 const byte p1enB = 21; // Inside Forearm (0) Encoder B
 const byte p2enA = 22; // Outside Forearm (1) Encoder A
 const byte p2enB = 23; // Outside Forearm (1) Encoder B
-const byte d1enA = 7; // Inside Upper arm (2) Encoder A
-const byte d1enB = 8; // Inside Upper arm (2) Encoder B
-const byte d2enA = 5; // Outside Upper arm (3) Encoder A
-const byte d2enB = 6; // Outside Upper arm (3) Encoder B
+const byte d1enA = 8; // Inside Upper arm (2) Encoder A
+const byte d1enB = 7; // Inside Upper arm (2) Encoder B
+const byte d2enA = 6; // Outside Upper arm (3) Encoder A
+const byte d2enB = 5; // Outside Upper arm (3) Encoder B
 const byte en[senseCount][2] = {{p1enA, p1enB}, {p2enA, p2enB}, {d1enA, d1enB}, {d2enA, d2enB}};
 
 // Motor Power
@@ -25,8 +25,8 @@ const byte p1m1 = 12; // Inside Forearm (0) Diode 1
 const byte p1m2 = 11; // Inside Forearm (0) Diode 2
 const byte p2m1 = 10; // Outside Forearm (1) Diode 1
 const byte p2m2 = 9; // Outside Forearm (1) Diode 2
-const byte d1m1 = 14; // Inside Upper arm (2) Diode 1
-const byte d1m2 = 15; // Inside Upper arm (2) Diode 2
+const byte d1m1 = 15; // Inside Upper arm (2) Diode 1
+const byte d1m2 = 14; // Inside Upper arm (2) Diode 2
 const byte d2m1 = 18; // Outside Upper arm (3) Diode 1
 const byte d2m2 = 19; // Outside Upper arm (3) Diode 2
 const byte pwm[senseCount][2] = {{p1m1, p1m2}, {p2m1, p2m2}, {d1m1, d1m2}, {d2m1, d2m2}};

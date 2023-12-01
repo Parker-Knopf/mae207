@@ -16,7 +16,7 @@ class Motor {
   long prevT = 0;
   float prevE = 0;
   float eintegral = 0;
-  const byte bound = 1;
+  const byte bound = 2;
   byte power = 255;
 
   // Pins
