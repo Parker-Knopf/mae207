@@ -50,7 +50,7 @@ link1_left  =  [link1.Vertices(1,:); link1.Vertices(2,:)];
 link1_right =  [link1.Vertices(3,:); link1.Vertices(4,:)]; 
 link2_left  =  [link2.Vertices(1,:); link2.Vertices(2,:)]; 
 link2_right =  [link2.Vertices(3,:); link2.Vertices(4,:)]; 
-link2_top     = [link2.Vertices(2,:); link2.Vertices(3,:)];
+link2_top   =  [link2.Vertices(2,:); link2.Vertices(3,:)];
 
 [d.m(1),d.b(1)] = fitLine(link1_left(:,1),link1_left(:,2));
 [d.m(2),d.b(2)] = fitLine(link1_right(:,1),link1_right(:,2));

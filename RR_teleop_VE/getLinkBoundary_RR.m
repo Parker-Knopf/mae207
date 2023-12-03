@@ -19,7 +19,7 @@ theta1 = joint_values(1);
 theta2 = joint_values(2);
 
 % find link shapes (as rectangles) 
-width = 1; % can change this 
+width = 2; % can change this 
 
 % convention:  [bottom left top left top right bottom right]
 x_coord = [0+base(1) 0+base(1) width+base(1) width+base(1)];
