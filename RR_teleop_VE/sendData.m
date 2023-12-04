@@ -4,9 +4,8 @@ function sendData(type, msg)
     package = strjoin(["{", type, ": ", msg, "}"],"");
     disp(package);
     % 
-    % baud = 115600;
-    % comun = serialport("COM6", baud);
-    % writeline(comun, package)
-% %   D: 1|2|3|4
+    baud = 115600;
+    comun = serialport("COM6", baud);
+    writeline(comun, package)
 end
 

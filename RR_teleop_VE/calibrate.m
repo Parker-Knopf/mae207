@@ -67,7 +67,7 @@ while cont
         end
         
         
-        pause(.2); % 0.2 sec
+        pause(1); % 0.2 sec
         %fprintf("joystick:%f\n", rjoystick.y(i)); 
         %fprintf("senseCounts:%f\n",senseCounts); 
         scale = .35; % [mm/count] 

@@ -34,7 +34,6 @@ class SerialM {
         else {
           return false;
         }
-        Serial.println(rawData);
 
         if (rawData.indexOf(d) == 0) {
           findIndex();
