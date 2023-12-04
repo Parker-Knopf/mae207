@@ -6,6 +6,8 @@ class SerialM {
   const String d = "D:"; // Data Indicator
   const String z = "Z:"; // Zero Indicator
   const byte indSize = 2; // Size of serial Protocol indicator
+  const char packStart = '{';
+  const char packEnd = '}';
   String rawData;
   const static byte dataSize = 4;
   
@@ -24,7 +26,15 @@ class SerialM {
 
     bool readData() {
       if (Serial.available() > 0) { //send data only when you recieve data
-          rawData = Serial.readString();
+          rawData = Serial.readStringUntil(packEnd);
+
+        if (rawData[0] == packStart) {
+          rawData = rawData.remove(0, 1);
+        }
+        else {
+          return false;
+        }
+        Serial.println(rawData);
 
         if (rawData.indexOf(d) == 0) {
           findIndex();

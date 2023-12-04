@@ -1,35 +1,20 @@
-function [dMap] = mapDist(d, dMax)
+function [dMap] = mapDist(d, dMax, t)
 %UNTITLED Summary of this function goes here
 %   this function will map the raw distance values fr
-    Hmax = 25; %[mm] maximum height displacement should be Rc = 25 mm
-    % Hmax = leverR; % cam radius lenght --> needs to be passed into the
-    % function
-    h = Hmax - (Hmax/dMax)*d;
-    %dMap = Hmax - (Hmax/dMax)*d;
+    hMax = 25; %[mm] maximum height displacement should be Rc = 25 mm
 
-    % implementing tapping
-    % i is the time and should be passed into the function
-    zone1 = dMax/2;
-    zone2 = dMax;
-    if d < zone1 && d > 0
-        % set amplitude and frequency for zone 1
-        A = 3;
-        w = 3;
-    elseif d>zone1 && d < zone2
-        % set amplitude and frequency for zone 2
-        A = 1; 
-        w = 1;
+    %sampling 
+    tSamp = 2;
+    if rem(t,tSamp) ~= 0
+        dMap = Hmax - (Hmax/dMax)*d;
+    else
+        dMap = 0;
     end
 
-    % can also try to make A and w directly dependent on d or h
-    % A = h/((hMax)
-
-    dMap = A*sin(w*t)+h;
 
     if d == 0 % whatever being passed in outside threshold
         dMap = 0;
     end
-
 
 end
 
