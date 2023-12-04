@@ -29,7 +29,7 @@ while cont
             notPressed = true;
         elseif ismember(state, states(senseCount+1:2*senseCount))
             zeroSense(motorNum-1); 
-            notPressed = false; %
+            notPressed = false; 
         elseif ismember(state, states(end))
             cont = false;
         end
