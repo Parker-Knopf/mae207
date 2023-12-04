@@ -26,8 +26,8 @@ controllerLibrary = NET.addAssembly([pwd '\SharpDX.XInput.dll']);
 myController = SharpDX.XInput.Controller(SharpDX.XInput.UserIndex.One);
 %% Calibration
 %%%%%%%%%%%%%%%%%%%%%%%% Calibration Process %%%%%%%%%%%%%%%%%%%%%%%%%%%
-% disp("Move the joystick up and down to calibrate each motor");
-% calibrate(myController);
+disp("Move the joystick up and down to calibrate each motor");
+calibrate(myController);
 
 %%  teleoperate
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -119,13 +119,10 @@ for i = 1:t_end
         [d,stop_motion] = dist2Obstacle(link_shape,obs,thres);
         
         %%%%%%%%% distance to obstacles %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        % h1 = mapDist(d.dist(1), 0.5);
-        % h2 = mapDist(d.dist(2), 0.5);
-        % h3 = mapDist(d.dist(3), 0.5);
-        % h4 = mapDist(d.dist(4), 0.5);
-        
-        % implement tapping
-        % h = mapDist(d.dist(1), 0.5);
+        h1 = mapDist(d.dist(1), thres);
+        h2 = mapDist(d.dist(2), thres);
+        h3 = mapDist(d.dist(3), thres);
+        h4 = mapDist(d.dist(4), thres);
         
         % fprintf("L1L dist to obstacle:%d\n",mapDist(d.dist(1), VE_limit)); % link 1 left 
         % fprintf("L1R dist to obstacle:%d\n",mapDist(d.dist(2), VE_limit)); % link 1 right 
@@ -135,8 +132,8 @@ for i = 1:t_end
 
         %%%%%%%%%%%%%%%%%%%%%%% Serial Communication %%%%%%%%%%%%%%%%%%%
         
-        % senseVals = [h1;h2;h3;h4];
-        % moveSense(senseVals);
+        senseVals = [h1;h2;h3;h4];
+        moveSense(senseVals);
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
         if stop_motion ~= 0 % update position only if motion is allowed

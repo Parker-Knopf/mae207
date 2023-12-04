@@ -26,8 +26,8 @@ controllerLibrary = NET.addAssembly([pwd '\SharpDX.XInput.dll']);
 myController = SharpDX.XInput.Controller(SharpDX.XInput.UserIndex.One);
 %% Calibration
 %%%%%%%%%%%%%%%%%%%%%%%% Calibration Process %%%%%%%%%%%%%%%%%%%%%%%%%%%
-% disp("Move the joystick up and down to calibrate each motor");
-% calibrate(myController);
+disp("Move the joystick up and down to calibrate each motor");
+calibrate(myController);
 
 %%  teleoperate
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -59,7 +59,7 @@ for i = 1:t_end
 
     % poll to see if joint control is triggered
     if ButtonStates.DPadUp || ButtonStates.DPadDown
-        use_forwardKinmematics = true;
+        use_forwardKinematics = true;
     end 
 
     % get x,y input from joystick%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -91,9 +91,11 @@ for i = 1:t_end
         target_x = double(rjoystick_offset.x(k) * R2Sim_Ratio);
         target_y = double(rjoystick_offset.y(k) * R2Sim_Ratio);
 
-        if use_f
-        tip_position = [target_x; target_y] + tip_position;
-        
+        if ~use_forwardKinematics
+            tip_position = [target_x; target_y] + tip_position;
+        else
+            joint_values = [target_x; target_y] + joint_values;
+        end 
        
         % do inverse kinematics and check collision %%%%%%%%%%%%%%%%%%%%%%%
         if any(cond_idx == 1)
@@ -110,15 +112,17 @@ for i = 1:t_end
             VE_limit = 0.25; % scale wrt to workspace size? 
             R2Sim_Ratio = VE_limit/joystick_limit;
         end
-        [joint_values,tip_position] = inverseKinematics_RR(geometry,tip_position);
+        if ~use_forwardKinematics
+            [joint_values,tip_position] = inverseKinematics_RR(geometry,tip_position);
+        end 
         link_shape = getLinkBoundary_RR(geometry,joint_values);
         [d,stop_motion] = dist2Obstacle(link_shape,obs,thres);
         
         %%%%%%%%% distance to obstacles %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        % h1 = mapDist(d.dist(1), 0.5);
-        % h2 = mapDist(d.dist(2), 0.5);
-        % h3 = mapDist(d.dist(3), 0.5);
-        % h4 = mapDist(d.dist(4), 0.5);
+        h1 = mapDist(d.dist(1), thres);
+        h2 = mapDist(d.dist(2), 0.5);
+        h3 = mapDist(d.dist(3), 0.5);
+        h4 = mapDist(d.dist(4), 0.5);
         
         % fprintf("L1L dist to obstacle:%d\n",mapDist(d.dist(1), VE_limit)); % link 1 left 
         % fprintf("L1R dist to obstacle:%d\n",mapDist(d.dist(2), VE_limit)); % link 1 right 
@@ -128,8 +132,8 @@ for i = 1:t_end
 
         %%%%%%%%%%%%%%%%%%%%%%% Serial Communication %%%%%%%%%%%%%%%%%%%
         
-        % senseVals = [h1;h2;h3;h4];
-        % moveSense(senseVals);
+        senseVals = [h1;h2;h3;h4];
+        moveSense(senseVals);
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
         if stop_motion ~= 0 % update position only if motion is allowed
