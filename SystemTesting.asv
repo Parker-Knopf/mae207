@@ -80,14 +80,13 @@ end
 
 function sendData(type, msg)
     package = strjoin(["{", type, ": ", msg, "}"], "");
-    disp(package);
+%     disp(package);
 
     baud = 115600;
     comun = serialport("COM8", baud);
-    write(comun, package, "string")
-    
-    while(comun.NumBytesAvailable>0)
-%         disp(comun.NumBytesAvailable)
-        disp(read(comun, 1, "string"))
+    writeline(comun, package)
+
+    if (comun.NumBytesAvailable > 0)
+        disp(readline(comun))
     end
 end
