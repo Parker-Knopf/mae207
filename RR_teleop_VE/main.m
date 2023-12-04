@@ -45,6 +45,7 @@ t_end = 1e5;
 
 k = 0;
 cond_idx = [false false false false];
+use_forwardKinematics = false;
 tip_position = tip_position_init;
 link_quadrant = [];
 
@@ -55,6 +56,11 @@ for i = 1:t_end
 
     State = myController.GetState();
     ButtonStates = ButtonStateParser(State.Gamepad.Buttons); % Put this into a structure
+
+    % poll to see if joint control is triggered
+    if ButtonStates.DPadUp || ButtonStates.DPadDown
+        use_forwardKinematics = true;
+    end 
 
     % get x,y input from joystick%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     rjoystick.x(i) = double(State.Gamepad.RightThumbX);
@@ -85,8 +91,11 @@ for i = 1:t_end
         target_x = double(rjoystick_offset.x(k) * R2Sim_Ratio);
         target_y = double(rjoystick_offset.y(k) * R2Sim_Ratio);
 
-        tip_position = [target_x; target_y] + tip_position;
-        
+        if ~use_forwardKinematics
+            tip_position = [target_x; target_y] + tip_position;
+        else
+            joint_values = [target_x; target_y] + joint_values;
+        end 
        
         % do inverse kinematics and check collision %%%%%%%%%%%%%%%%%%%%%%%
         if any(cond_idx == 1)
@@ -103,7 +112,9 @@ for i = 1:t_end
             VE_limit = 0.25; % scale wrt to workspace size? 
             R2Sim_Ratio = VE_limit/joystick_limit;
         end
-        [joint_values,tip_position] = inverseKinematics_RR(geometry,tip_position);
+        if ~use_forwardKinematics
+            [joint_values,tip_position] = inverseKinematics_RR(geometry,tip_position);
+        end 
         link_shape = getLinkBoundary_RR(geometry,joint_values);
         [d,stop_motion] = dist2Obstacle(link_shape,obs,thres);
         
@@ -112,6 +123,9 @@ for i = 1:t_end
         % h2 = mapDist(d.dist(2), 0.5);
         % h3 = mapDist(d.dist(3), 0.5);
         % h4 = mapDist(d.dist(4), 0.5);
+        
+        % implement tapping
+        % h = mapDist(d.dist(1), 0.5);
         
         % fprintf("L1L dist to obstacle:%d\n",mapDist(d.dist(1), VE_limit)); % link 1 left 
         % fprintf("L1R dist to obstacle:%d\n",mapDist(d.dist(2), VE_limit)); % link 1 right 
