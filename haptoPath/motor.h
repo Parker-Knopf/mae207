@@ -160,14 +160,13 @@ class Motor {
       else {setPower(0);}
     }//end of run
 
-    void setPower(int pwm) {
+    int setPower(int pwm) {
       // Set the singal to the motor controller
       if (pwm > power) {pwm = power;}
       else if (pwm < 0) {pwm = 0;}
       // Serial.println(pwm);
 
       if (setCount > count) {
-        // Serial.println(pwm);
         analogWrite(pinPWM1, pwm);
         analogWrite(pinPWM2, 0);
       }
@@ -201,7 +200,7 @@ class Motor {
       // Integral Calculation
       eintegral += e * dT;
 
-      // Control Signal
+      // Control 
       return abs(kp*e +kd*dedt + ki*eintegral);
     }//end of controler
 };//end of Encoder

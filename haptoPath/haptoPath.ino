@@ -51,6 +51,11 @@ void setup() {
   for (byte i = 0; i < senseCount; i++) {
     sense[i].absZero();
   }
+
+  // Absolute Zero all Sense
+  for (byte i = 0; i < senseCount; i++) {
+    sense[i].absZero();
+  }
 }
 
 void loop() {
@@ -66,7 +71,11 @@ void loop() {
     comun.D_zero = -1;
   }
   
-  for (byte i = 0; i < senseCount ; i++) {
+  // for (byte i = 0; i < senseCount ; i++) {
+  //   sense[i].updateMotor(comun.D[i]);
+  // }
+  for (byte i = 0; i < 1 ; i++) {
+    // Serial.println(String(comun.D[i], 0));
     sense[i].updateMotor(comun.D[i]);
   }
 
