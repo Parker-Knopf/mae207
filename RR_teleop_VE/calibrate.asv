@@ -29,7 +29,7 @@ while cont
             notPressed = true;
         elseif ismember(state, states(senseCount+1:2*senseCount))
             zeroSense(motorNum-1); 
-            notPressed = true;
+            notPressed = false; %
         elseif ismember(state, states(end))
             cont = false;
         end
@@ -41,7 +41,6 @@ while cont
 
     senseCounts = 0;
     i = 0;
-    h = zeros(4,1);
 
     while notPressed 
 %%%%%%%%%%%%%%%%%%%% control loop for calibration %%%%%%%%%%%%%%%%%%%%%%%%
@@ -73,19 +72,20 @@ while cont
         %fprintf("senseCounts:%f\n",senseCounts); 
         scale = .35; % [mm/count] 
         d = scale*senseCounts; % conversion into [mm]
-        %h = zeros(4,1);
+        h = zeros(4,1);
     
         %%%%%%%%% distance to obstacles %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         h(motorNum) = d;  
         %senseVals = d + hSaved(motorNum);
-        
+
+        data = h + hSaved;
+
         if ButtonStates.A == 1
             notPressed = false;
-            hSaved(motorNum) = d; %hvalues saved to send to 
+            %hSaved(motorNum) = hSaved(motorNum) + d; %hvalues saved to send to 
+            hSaved(motorNum) = d;
         end
-
-        data = hSaved + h;
-
+        
         moveSense(data);
     end
 
