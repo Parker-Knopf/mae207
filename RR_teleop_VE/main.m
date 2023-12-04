@@ -113,6 +113,9 @@ for i = 1:t_end
         % h3 = mapDist(d.dist(3), 0.5);
         % h4 = mapDist(d.dist(4), 0.5);
         
+        % implement tapping
+        % h = mapDist(d.dist(1), 0.5);
+        
         % fprintf("L1L dist to obstacle:%d\n",mapDist(d.dist(1), VE_limit)); % link 1 left 
         % fprintf("L1R dist to obstacle:%d\n",mapDist(d.dist(2), VE_limit)); % link 1 right 
         % fprintf("L2L dist to obstacle:%d\n",mapDist(d.dist(3), VE_limit)); % link 2 left 
