@@ -32,7 +32,8 @@ while cont
             zeroSense(motorNum-1); 
             notPressed = false;
         elseif ismember(state, states(end))
-            cont = false;
+            break;
+            % cont = false;
         end
     else
         disp("------")
@@ -68,7 +69,7 @@ while cont
         end
         
         
-        pause(.5); % 0.2 sec
+        % pause(.5); % 0.2 sec
         %fprintf("joystick:%f\n", rjoystick.y(i)); 
         %fprintf("senseCounts:%f\n",senseCounts); 
         scale = .35; % [mm/count] 
