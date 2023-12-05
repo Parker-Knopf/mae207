@@ -5,6 +5,7 @@ class SerialM {
   const String c = "|"; // Serial Data seperator
   const String d = "D:"; // Data Indicator
   const String z = "Z:"; // Zero Indicator
+  const String s = "S:"; // System Indicator
   const byte indSize = 2; // Size of serial Protocol indicator
   const char packStart = '{';
   const char packEnd = '}';
@@ -17,6 +18,7 @@ class SerialM {
   
   public:
 
+    bool reboot = false; // Reboot the system
     int D_zero = -1; // Height offsets of motors [m]
     double D[dataSize]; // Heights of Motors [m]
 
@@ -45,6 +47,10 @@ class SerialM {
         else if (rawData.indexOf(z) == 0) {
           parseZero();
           return true;
+        }
+        else if (rawData.indexOf(s) == 0) {
+          reboot = true;
+          return false;
         }
         else {return false;}
       }

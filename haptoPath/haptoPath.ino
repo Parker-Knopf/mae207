@@ -48,14 +48,7 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(en[3][1]), en4B, CHANGE);
 
   // Absolute Zero all Sense
-  for (byte i = 0; i < senseCount; i++) {
-    sense[i].absZero();
-  }
-  delay(.1);
-  // Absolute Zero all Sense
-  for (byte i = 0; i < senseCount; i++) {
-    sense[i].absZero();
-  }
+  zeroSys();
 }//end of setup
 
 void loop() {
@@ -76,8 +69,25 @@ void loop() {
     // After operation reset D_zero
     comun.D_zero = -1;
   }
+
+  // Reboot system to zero motors
+  if (comun.reboot) {
+    zeroSys();
+    comun.reboot = false;
+  }
 }//end of loop
 
+void zeroSys() {
+  // Absolute Zero all Sense
+  for (byte i = 0; i < senseCount; i++) {
+    sense[i].absZero();
+  }
+  delay(.5);
+  // Absolute Zero all Sense
+  for (byte i = 0; i < senseCount; i++) {
+    sense[i].absZero();
+  }
+}//end of zeroSys
 
 void en1A() {
   sense[0].encoderA();
