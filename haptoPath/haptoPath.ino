@@ -51,7 +51,7 @@ void setup() {
   for (byte i = 0; i < senseCount; i++) {
     sense[i].absZero();
   }
-
+  delay(.1);
   // Absolute Zero all Sense
   for (byte i = 0; i < senseCount; i++) {
     sense[i].absZero();
@@ -63,7 +63,7 @@ void loop() {
   // comun.readData(); // Read the data from the Serail communication
 
   if (comun.readData()) {
-    for (byte i = 1; i < 2 ; i++) {
+    for (byte i = 0; i < senseCount ; i++) {
       sense[i].updateMotor(comun.D[i]);
     }
   }

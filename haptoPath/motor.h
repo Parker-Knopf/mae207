@@ -9,8 +9,8 @@ class Motor {
   volatile bool Bval = true; // Old Encoder B val
 
   // PID contoller in system
-  const float kp = .3;
-  const float kd = .08;
+  const float kp = 3;
+  const float kd = .1;
   const float ki = 0.01;
 
   long prevT = 0;
@@ -155,6 +155,7 @@ class Motor {
 
     void run(bool state) {
       // Turn on/off Motor
+      // Serial.println(count);
       if (state) {setPower(controler());}
       else {setPower(0);}
     }//end of run
@@ -163,7 +164,7 @@ class Motor {
       // Set the singal to the motor controller
       if (pwm > power) {pwm = power;}
       else if (pwm < 0) {pwm = 0;}
-      Serial.println(pwm);
+      // Serial.println(pwm);
 
       if (setCount > count) {
         analogWrite(pinPWM1, pwm);
