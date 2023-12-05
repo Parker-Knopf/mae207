@@ -53,7 +53,7 @@ function [senseCounts, senseVals] = moveSense(num, senseCounts, senseVals)
     % 29 rightarrow
     % 30 uparrow
     % 31 downarrow
-    count2h = 10;
+    count2h = 5;
     key = 0;
     disp("Enter to Exit");
     while (key ~= 13)
@@ -83,11 +83,8 @@ function sendData(type, msg)
     disp(package);
 
     baud = 115600;
-    comun = serialport("COM8", baud);
+    comun = serialport("COM3", baud);
     write(comun, package, "string")
     
-    while(comun.NumBytesAvailable>0)
-%         disp(comun.NumBytesAvailable)
-        disp(read(comun, 1, "string"))
-    end
+%     disp(read(comun, 3, "string"))
 end

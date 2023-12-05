@@ -51,16 +51,22 @@ void setup() {
   for (byte i = 0; i < senseCount; i++) {
     sense[i].absZero();
   }
-
+  delay(.1);
   // Absolute Zero all Sense
   for (byte i = 0; i < senseCount; i++) {
     sense[i].absZero();
   }
-}
+}//end of setup
 
 void loop() {
   // put your main code here, to run repeatedly:
-  comun.readData(); // Read the data from the Serail communication
+  // comun.readData(); // Read the data from the Serail communication
+
+  if (comun.readData()) {
+    for (byte i = 0; i < senseCount ; i++) {
+      sense[i].updateMotor(comun.D[i]);
+    }
+  }
 
   // Zero motors
   if (comun.D_zero != -1) {
@@ -70,16 +76,7 @@ void loop() {
     // After operation reset D_zero
     comun.D_zero = -1;
   }
-  
-  // for (byte i = 0; i < senseCount ; i++) {
-  //   sense[i].updateMotor(comun.D[i]);
-  // }
-  for (byte i = 0; i < 1 ; i++) {
-    // Serial.println(String(comun.D[i], 0));
-    sense[i].updateMotor(comun.D[i]);
-  }
-
-}
+}//end of loop
 
 
 void en1A() {

@@ -26,6 +26,7 @@ class SerialM {
 
     bool readData() {
       if (Serial.available() > 0) { //send data only when you recieve data
+          // Serial.println(Serial.available());
           rawData = Serial.readStringUntil(packEnd);
 
         if (rawData[0] == packStart) {
