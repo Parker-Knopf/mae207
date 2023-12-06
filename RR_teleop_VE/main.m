@@ -119,8 +119,8 @@ for i = 1:t_end
         [d,stop_motion] = dist2Obstacle(link_shape,obs,thres);
         
         %%%%%%%%% distance to obstacles %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        h1 = mapDist(d.dist(1), thres,i);
-        h2 = mapDist(d.dist(2), thres,i);
+        h1 = mapDist(d.dist(2), thres,i);
+        h2 = mapDist(d.dist(1), thres,i);
         h3 = mapDist(d.dist(3), thres,i);
         h4 = mapDist(d.dist(4), thres,i);
         

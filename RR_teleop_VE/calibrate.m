@@ -14,6 +14,7 @@ notPressed = false;
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%% prompt user %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+sendData('S','');
 while cont    
     % States
     states = ["M1", "M2", "M3", "M4", "Z1", "Z2", "Z3", "Z4", "E"];
