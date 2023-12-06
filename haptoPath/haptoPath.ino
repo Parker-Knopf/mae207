@@ -5,7 +5,7 @@
 
 const int gearRatio = 380;
 const static byte senseCount = 4; // Number of actuators
-const float leverR[senseCount] = {25, 25, 25, 25}; // Lever arm of haptic actuator [mm]
+const float leverR[senseCount] = {22, 22, 22, 22}; // Lever arm of haptic actuator [mm]
 
 // Pin Definitions
 
