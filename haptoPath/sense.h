@@ -9,7 +9,7 @@ class Sense : public Motor {
   // Logic
   float threshold = 10; // boundry around the obstacle that is deemed unsafe [mm] 
   float d_JND = 3; //JND of normal displacement into the skin (minimum) [mm]
-  float hMax = 0;
+  float hMax;
   
   // Offset Vals
   float hOffsetAng = 0;
@@ -23,6 +23,7 @@ class Sense : public Motor {
 
     Sense(float r, byte pwm1, byte pwm2, byte pA, byte pB, int ratio):Motor(pwm1, pwm2, pA, pB, ratio) {
         Rc = r;
+        hMax = r;
     }//end of constructor 
 
     void updateMotor(float h) {
@@ -53,19 +54,19 @@ class Sense : public Motor {
   
     float motorTheta(float h) {
       // might need to do some linear mapping between h and actual indentation
-      hTotal = hOffset + h; //absolute h [mm]
+      hTotal = bound(hOffset + h); //absolute h [mm]
       thetaTemp = asin(hTotal/Rc); //[rads]
-      return bound(thetaTemp);
+      return thetaTemp;
     }//end of motorTheta
 
-    float bound(float thetaTemp) {
-      if (thetaTemp > thetaMax) { //bound theta so it doesn't go past 90 degrees
-        thetaTemp = thetaMax;
+    float bound(float h) {
+      if (h > hMax) { //bound theta so it doesn't go past 90 degrees
+        h = hMax;
       }
-      else if (theta < 0) {
-        thetaTemp = 0;
+      else if (h < 0) {
+        h = 0;
       }
-      return thetaTemp;
+      return h;
     }//end of bound
 
 };// end of Sense
