@@ -5,10 +5,11 @@ scenario = 1;
 [x_VE_lim,y_VE_lim,obs,target,geometry] = VE_setup(scenario);
 %% create figure object for visualization 
 figure 
-tab1 = uitab('Title','Global View');
+tab1 = uitab('Title','User View');
 ax1 = axes(tab1);
-tab2 = uitab('Title','User View');
+tab2 = uitab('Title','Global View');
 ax2 = axes(tab2);
+
 %% test IK function and check collision with teleoperated input 
 
 thres = 1; % threshold around obstacle
@@ -18,8 +19,8 @@ tip_position_init = [x_VE_lim/2;geometry(1)+geometry(2)];
 joint_values_init = inverseKinematics_RR(geometry,tip_position_init);
 link_shape = getLinkBoundary_RR(geometry,joint_values_init);
 d = dist2Obstacle(link_shape,obs,thres);
-[ax1,camera_target] = plotVE(geometry,link_shape,target,obs,thres,d,joint_values_init,ax1);
-plotUserPOV(ax1,ax2,camera_target); 
+[ax2,camera_target] = plotVE(geometry,link_shape,target,obs,thres,d,joint_values_init,ax2);
+plotUserPOV(ax2,ax1,camera_target); 
 pause(0.01);
  
 %% set up controller
@@ -162,8 +163,8 @@ for i = 1:t_end
                 tip_position = forwardKinematics_RR(geometry,joint_values);
             end 
 
-            plot(ax1,tip_position(1),tip_position(2),'ro'); hold on; 
-            plot(ax2,tip_position(1),tip_position(2),'ro'); pause(0.0001);
+            plot(ax2,tip_position(1),tip_position(2),'ro'); hold on; 
+            plot(ax1,tip_position(1),tip_position(2),'ro'); pause(0.0001);
 
             [~,joint_2_position] = forwardKinematics_RR(geometry,joint_values,true);
             violation = checkViolation(tip_position,joint_2_position,d,...
@@ -197,10 +198,10 @@ for i = 1:t_end
             continue
         end
         cla(ax1); cla(ax2);
-        plot(ax1,tip_position(1),tip_position(2),'ro'); hold on
-        plot(ax2,tip_position(1),tip_position(2),'ro');
-        [ax1,camera_target] = plotVE(geometry,link_shape,target,obs,thres,d,joint_values,ax1);
-        plotUserPOV(ax1,ax2,camera_target); pause(0.0001); 
+        plot(ax2,tip_position(1),tip_position(2),'ro'); hold on
+        plot(ax1,tip_position(1),tip_position(2),'ro');
+        [ax2,camera_target] = plotVE(geometry,link_shape,target,obs,thres,d,joint_values,ax2);
+        plotUserPOV(ax2,ax1,camera_target); pause(0.0001); 
     end
 end
 % save task completion time
