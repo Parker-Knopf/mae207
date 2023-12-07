@@ -11,7 +11,7 @@ class Motor {
   // PID contoller in system
   const float kp = 10;
   const float kd = 2;
-  const float ki = 0.01;
+  const float ki = 0.5;
 
   long prevT = 0;
   float prevE = 0;

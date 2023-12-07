@@ -87,6 +87,9 @@ void zeroSys() {
   for (byte i = 0; i < senseCount; i++) {
     sense[i].absZero();
   }
+  for (byte i = 0; i < senseCount; i++) {
+    sense[i].updateMotor(1);
+  }
 
 }//end of zeroSys
 
