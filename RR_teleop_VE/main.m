@@ -1,8 +1,8 @@
 %% main function - TO RUN
 clc;clear;close all
 %% run the VE_setup script 
-run VE_setup.m
-
+scenario = 1;
+[x_VE_lim,y_VE_lim,obs,target,geometry] = VE_setup(scenario);
 %% create figure object for visualization 
 figure 
 tab1 = uitab('Title','Global View');
@@ -11,14 +11,14 @@ tab2 = uitab('Title','User View');
 ax2 = axes(tab2);
 %% test IK function and check collision with teleoperated input 
 
-thres = 2.5; % threshold around obstacle
+thres = 1; % threshold around obstacle
 
 % initial configuration %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 tip_position_init = [x_VE_lim/2;geometry(1)+geometry(2)];
 joint_values_init = inverseKinematics_RR(geometry,tip_position_init);
 link_shape = getLinkBoundary_RR(geometry,joint_values_init);
 d = dist2Obstacle(link_shape,obs,thres);
-[ax1,camera_target] = plotVE(geometry,link_shape,target,obs,d,joint_values_init,ax1);
+[ax1,camera_target] = plotVE(geometry,link_shape,target,obs,thres,d,joint_values_init,ax1);
 plotUserPOV(ax1,ax2,camera_target); 
 pause(0.01);
  
@@ -50,6 +50,7 @@ t_end = 1e5;
 DATA.tip_position_all  = Inf(2,t_end-t_stable);
 DATA.joint_values_all  = Inf(2,t_end-t_stable);
 DATA.control_mode_all  = Inf(1,t_end-t_stable);
+DATA.task_time         = Inf;
 
 % initialize d object (contains field d.dist)
 d.dist = zeros(1,5);
@@ -64,13 +65,14 @@ joint_values = joint_values_init;
 link_quadrant = [];
 
 % control loop for operation
+tic;
 for i = 1:t_end
 
     State = myController.GetState();
     ButtonStates = ButtonStateParser(State.Gamepad.Buttons); % Put this into a structure
 
     % poll to see if joint control is triggered
-    if ButtonStates.DPadUp || ButtonStates.DPadDown
+    if ButtonStates.DPadDown || ButtonStates.DPadUp
         use_forwardKinematics = true;
     else 
         use_forwardKinematics = false;
@@ -95,7 +97,6 @@ for i = 1:t_end
         rjoystick.x(i) = mean(rjoystick.x(i-filter_window+1:i));
         rjoystick.y(i) = mean(rjoystick.y(i-filter_window+1:i));  
     end
-
     if i >= t_stable % do teleoperation task %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         k = k + 1; 
 
@@ -105,21 +106,21 @@ for i = 1:t_end
         DATA.control_mode_all(:,k) = use_forwardKinematics;
 
         %%%%%%%%% distance to obstacles %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        % h1 = mapDist(d.dist(2), thres,i);
-        % h2 = mapDist(d.dist(1), thres,i);
-        % h3 = mapDist(d.dist(3), thres,i);
-        % h4 = mapDist(d.dist(4), thres,i);
+        h1 = mapDist(d.dist(2), thres,i);
+        h2 = mapDist(d.dist(1), thres,i);
+        h3 = mapDist(d.dist(3), thres,i);
+        h4 = mapDist(d.dist(4), thres,i);
         
-        fprintf("L1L dist to obstacle:%d\n",d.dist(1)); % link 1 left 
-        fprintf("L1R dist to obstacle:%d\n",d.dist(2)); % link 1 right 
-        fprintf("L2L dist to obstacle:%d\n",d.dist(3)); % link 2 left 
-        fprintf("L2R dist to obstacle:%d\n",d.dist(4)); % link 2 right 
+        % fprintf("L1L dist to obstacle:%d\n",d.dist(1)); % link 1 left 
+        % fprintf("L1R dist to obstacle:%d\n",d.dist(2)); % link 1 right 
+        % fprintf("L2L dist to obstacle:%d\n",d.dist(3)); % link 2 left 
+        % fprintf("L2R dist to obstacle:%d\n",d.dist(4)); % link 2 right 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
         %%%%%%%%%%%%%%%%%%%%%%% Serial Communication %%%%%%%%%%%%%%%%%%%
         
-        % senseVals = [h1;h2;h3;h4];
-        % moveSense(senseVals);
+        senseVals = [h1;h2;h3;h4];
+        moveSense(senseVals);
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
         if k == 1
@@ -141,15 +142,15 @@ for i = 1:t_end
         else
             % cap minimal joint movement at 5 deg
             djoint = 0;
-            if target_y ~= 0
-                djoint = sign(target_y/100)*max(abs(target_y/100),deg2rad(0.1));
+            if target_x ~= 0
+                djoint = sign(target_x/100)*max(abs(target_x/100),deg2rad(0.1));
             end
             % move either joint 1 or joint 2 depending on up/down button pressed
             if ButtonStates.DPadUp 
-                joint_values(2) = djoint + joint_values(2);
+                joint_values(2) = -djoint + joint_values(2);
             end 
-            if ButtonStates.DPadDown 
-                joint_values(1) = djoint + joint_values(1);
+            if ButtonStates.DPadDown
+                joint_values(1) = -djoint + joint_values(1);
             end
         end 
        
@@ -198,10 +199,15 @@ for i = 1:t_end
         cla(ax1); cla(ax2);
         plot(ax1,tip_position(1),tip_position(2),'ro'); hold on
         plot(ax2,tip_position(1),tip_position(2),'ro');
-        [ax1,camera_target] = plotVE(geometry,link_shape,target,obs,d,joint_values,ax1);
+        [ax1,camera_target] = plotVE(geometry,link_shape,target,obs,thres,d,joint_values,ax1);
         plotUserPOV(ax1,ax2,camera_target); pause(0.0001); 
     end
 end
+% save task completion time
+DATA.task_time = toc;
+
+% save the scenario
+DATA.scenario = scenario;
 
 % saving data 
 cd('DATA_COLLECTION\')

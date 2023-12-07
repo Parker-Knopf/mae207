@@ -1,5 +1,5 @@
 % implements plotting function that visualizes the VE 
-function [ax,camera_target] = plotVE(geometry,link_shape,target,obs,d,theta,ax)
+function [ax,camera_target] = plotVE(geometry,link_shape,target,obs,thres,d,theta,ax)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % INPUT:
 % geometry
@@ -69,7 +69,7 @@ nObs = numel(obs);
 obsX_padded = cell(1,nObs); obsY_padded = cell(1,nObs);
 
 for i = 1:nObs
-    obs_tmp_padded = polybuffer(obs(i),1);
+    obs_tmp_padded = polybuffer(obs(i),thres);
     obsX_padded{i} = obs_tmp_padded.Vertices(:,1);
     obsY_padded{i} = obs_tmp_padded.Vertices(:,2);
 end

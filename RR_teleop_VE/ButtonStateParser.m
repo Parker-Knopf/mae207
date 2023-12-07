@@ -6,7 +6,7 @@ fields = {
     'DPadUp'
     'DPadDown'
     'DPadLeft'
-    'DpadRight'
+    'DPadRight'
     'Start'
     'Back'
     'LeftStick'
