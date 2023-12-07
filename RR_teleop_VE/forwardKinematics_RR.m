@@ -40,4 +40,13 @@ tip_y = joint_y_2 + L2*sin(theta2);
 
 tip_position = [tip_x;tip_y] + base;
 
+% check if the tip_position is within the workspace, if not, return the
+% closest position in the workspace 
+workspace = makeCircle(base,L1+L2);
+feasible_pt = isinterior(workspace,tip_position(1),tip_position(2));
+if ~feasible_pt
+    [idx,~,~] = nearestvertex(workspace,tip_position(1),tip_position(2));
+    tip_position = workspace.Vertices(idx,:)';
+end 
+
 end

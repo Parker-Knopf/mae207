@@ -3,11 +3,13 @@
 x_VE_lim = 50;
 y_VE_lim = 50; 
 %% placing static obstacles, subject to change %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-scenario = randi([1 4],1);
+% scenario = randi([1 4],1);
+scenario = 1;
 if scenario == 1
-    obs1_center = [(1/3)*x_VE_lim;(2/3)*y_VE_lim];
-    obs2_center = [(1/3)*x_VE_lim;(1/4)*y_VE_lim];
+    obs1_center = [(1/3)*x_VE_lim;(2/3)*y_VE_lim-2];
+    obs2_center = [(1/3)*x_VE_lim;(1/3)*y_VE_lim];
     obs3_center = [(2/3)*x_VE_lim;(1/2)*y_VE_lim];
+    obs4_center = [(2/3)*x_VE_lim;(1/6)*y_VE_lim];
     target_center = [(1/3)*x_VE_lim (1/2)*y_VE_lim];
 elseif scenario == 2
     obs1_center = [(2/3)*x_VE_lim;(2/3)*y_VE_lim];
@@ -27,12 +29,12 @@ elseif scenario == 4
 end 
 
 % for this particular trial 
-obs1 = makeCircle(obs1_center, 5);
-obs2 = makeCircle(obs2_center, 5);
-obs3 = makeCircle(obs3_center, 5);
+obs1 = makeCircle(obs1_center, 3);
+obs2 = makeCircle(obs2_center, 3);
+obs3 = makeCircle(obs3_center, 3);
+obs4 = makeCircle(obs4_center, 3);
 
-obs = [obs1;obs2;obs3];
-% obs = [obs1;obs2;obs3;obs4];
+obs = [obs1;obs2;obs3;obs4];
 %% placing target, subject to change %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 target_radius = 1;
 target = makeCircle(target_center,target_radius);

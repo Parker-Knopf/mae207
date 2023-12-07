@@ -10,9 +10,7 @@ ax1 = axes(tab1);
 tab2 = uitab('Title','User View');
 ax2 = axes(tab2);
 %% test IK function and check collision with teleoperated input 
-
-thres = 2.5; % threshold around obstacle
-
+thres = 1; % threshold around obstacle
 % initial configuration %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 tip_position_init = [x_VE_lim/2;geometry(1)+geometry(2)];
 joint_values_init = inverseKinematics_RR(geometry,tip_position_init);
@@ -47,9 +45,9 @@ t_stable = 1e3;
 t_end = 1e5;
 
 % setup data collection
-DATA.tip_position_all  = Inf(2,t_end-t_stable);
-DATA.joint_values_all  = Inf(2,t_end-t_stable);
-DATA.control_mode_all  = Inf(1,t_end-t_stable);
+DATA.tip_position_all  = NaN(2,t_end);
+DATA.joint_values_all  = NaN(2,t_end);
+DATA.control_mode_all  = NaN(1,t_end);
 
 % initialize d object (contains field d.dist)
 d.dist = zeros(1,5);
@@ -78,7 +76,7 @@ for i = 1:t_end
 
     % poll to see if termination button is triggered 
     if ButtonStates.X
-        fprintf("Terminate and save data!\n");
+        sprintf("Terminate and save data!\n");
         break
     end
 
@@ -100,9 +98,9 @@ for i = 1:t_end
         k = k + 1; 
 
         % capture data %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        DATA.tip_position_all(:,k) = tip_position;
-        DATA.joint_values_all(:,k) = joint_values;
-        DATA.control_mode_all(:,k) = use_forwardKinematics;
+        DATA.tip_position_all(:,i) = tip_position;
+        DATA.joint_values_all(:,i) = joint_values;
+        DATA.control_mode_all(:,i) = use_forwardKinematics;
 
         %%%%%%%%% distance to obstacles %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % h1 = mapDist(d.dist(2), thres,i);
@@ -144,7 +142,7 @@ for i = 1:t_end
             if target_y ~= 0
                 djoint = sign(target_y/100)*max(abs(target_y/100),deg2rad(0.1));
             end
-            % move either joint 1 or joint 2 depending on up/down button pressed
+
             if ButtonStates.DPadUp 
                 joint_values(2) = djoint + joint_values(2);
             end 
@@ -176,14 +174,13 @@ for i = 1:t_end
         end
 
         % update tip position/joint values depending on the kinematics
-        % scheme %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % scheme
         if ~use_forwardKinematics
             [joint_values,tip_position] = inverseKinematics_RR(geometry,tip_position);
         else
             tip_position = forwardKinematics_RR(geometry,joint_values);
         end 
-
-        % check for obstacle collisions %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % check for obstacle collisions 
         link_shape = getLinkBoundary_RR(geometry,joint_values);
         [d,stop_motion] = dist2Obstacle(link_shape,obs,thres);
 
@@ -205,10 +202,12 @@ end
 
 % saving data 
 cd('DATA_COLLECTION\')
+
 filename = strcat('VE_DATA_',datestr(now));
 filename = strrep(filename,' ','_');
 filename = strrep(filename,':','_');
 filename = strrep(filename,'-','_');
-save(filename, 'DATA');
+
+save(filename, 'data');
 cd ..
 
