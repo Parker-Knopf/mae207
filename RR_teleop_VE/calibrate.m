@@ -13,7 +13,7 @@ notPressed = false;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%% prompt user %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 sendData('S','');
-hSaved = load('calibration_values','hSaved');
+load('calibration_values','hSaved');
 while cont    
     % States
     states = ["M1", "M2", "M3", "M4", "E"];
@@ -69,7 +69,7 @@ while cont
         end
         
         
-        % pause(.5); % 0.2 sec
+        pause(.1); % 0.2 sec
         %fprintf("joystick:%f\n", rjoystick.y(i)); 
         %fprintf("senseCounts:%f\n",senseCounts); 
         scale = .35; % [mm/count] 
