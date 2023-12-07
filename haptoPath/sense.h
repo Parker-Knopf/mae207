@@ -38,7 +38,7 @@ class Sense : public Motor {
     }//end of setZero
 
     void absZero() {
-      maxPower(150);
+      maxPower(200);
       setRads(-2*PI);
 
       int oldCount = -100;

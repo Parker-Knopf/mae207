@@ -13,7 +13,9 @@ notPressed = false;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%% prompt user %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 sendData('S','');
+pause(1);
 load('calibration_values','hSaved');
+moveSense(hSaved);
 while cont    
     % States
     states = ["M1", "M2", "M3", "M4", "E"];
