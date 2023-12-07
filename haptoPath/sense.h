@@ -48,6 +48,8 @@ class Sense : public Motor {
       }
       maxPower(255);
       zero(); // Zero encoder
+      hOffsetAng = 0;
+      hOffset = 0;
     }//end of absZero
 
   private:
