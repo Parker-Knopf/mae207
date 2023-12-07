@@ -9,14 +9,14 @@ class Motor {
   volatile bool Bval = true; // Old Encoder B val
 
   // PID contoller in system
-  const float kp = 3;
-  const float kd = .1;
+  const float kp = 10;
+  const float kd = 2;
   const float ki = 0.01;
 
   long prevT = 0;
   float prevE = 0;
   float eintegral = 0;
-  const byte bound = 1;
+  const byte bound = 3;
   byte power = 255;
 
   // Pins
