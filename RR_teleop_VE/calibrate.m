@@ -17,7 +17,7 @@ notPressed = false;
 sendData('S','');
 while cont    
     % States
-    states = ["M1", "M2", "M3", "M4", "Z1", "Z2", "Z3", "Z4", "E"];
+    states = ["M1", "M2", "M3", "M4", "E"];
     
     % display menu of options 
     menu(senseCount)
@@ -25,16 +25,14 @@ while cont
     senseNum = str2num(state(end));
     
     if ismember(state, states)
-        if ismember(state, states(1:senseCount))
+        if ismember(state, states(1:senseCount)) % user wants to control one of the motors
             motorNum = senseNum; 
-            notPressed = true;
-        elseif ismember(state, states(senseCount+1:2*senseCount))
+            notPressed = true;  
+        elseif ismember(state, states(end)) % user wants to save motor positions and exit
             motorNum = senseNum;
             zeroSense(motorNum-1); 
-            notPressed = false;
-        elseif ismember(state, states(end))
+            %notPressed = false;
             break;
-            % cont = false;
         end
     else
         disp("------")
@@ -85,7 +83,6 @@ while cont
 
         if ButtonStates.A == 1
             notPressed = false;
-            %hSaved(motorNum) = hSaved(motorNum) + d; %hvalues saved to send to 
             hSaved(motorNum) = d;
         end
         

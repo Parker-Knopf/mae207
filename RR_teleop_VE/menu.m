@@ -3,9 +3,7 @@ function menu(num)
     for (i = 1:num)
         fprintf("M%d: Move Sense %d\n", i, i);
     end
-    for (i = 1:num)
-        fprintf("Z%d: Zero Sense %d\n", i, i);
-    end
-    disp("E: Exit after zeroing the last motor");
+
+    disp("E: Press E to zer0 all motors and exit");
     
 end
