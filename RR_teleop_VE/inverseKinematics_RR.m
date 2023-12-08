@@ -1,5 +1,5 @@
 % implements the inverse kinematics function of a planar RR manipulator 
-function [joint_values,tip_position] = inverseKinematics_RR(geometry,tip_position)
+function [joint_values,tip_position] = inverseKinematics_RR(geometry,tip_position,scenario)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % INPUTS: 
 % geometry (4x1) [L1;L2;base], the length of each link, base position of the robot  
@@ -42,9 +42,14 @@ beta = acos(beta_arg);
 alpha_arg = (x^2+y^2+L1^2-L2^2)/(2*L1*sqrt(x^2+y^2));
 alpha = acos(alpha_arg);
 
-% calculate joint values, always assume righty solution
-theta1 = real(gamma - alpha);
-theta2 = real(pi - beta + theta1);
+% calculate joint values, always assume righty solution for scenario 1 & 3
+if scenario == 1 || scenario== 3
+    theta1 = real(gamma - alpha);
+    theta2 = real(pi - beta + theta1);
+elseif scenario == 2 || scenario == 4
+    theta1 = real(gamma + alpha);
+    theta2 = real(beta - pi + theta1);
+end 
 
 % make sure that output is always between 0,2pi
 theta1 = wrapTo2Pi(theta1);
