@@ -1,7 +1,7 @@
 %% main function - TO RUN
 clc;clear;close all
 %% run the VE_setup script 
-scenario = 3;
+scenario = 2;
 [x_VE_lim,y_VE_lim,obs,target,geometry] = VE_setup(scenario);
 %% create figure object for visualization 
 figure 
