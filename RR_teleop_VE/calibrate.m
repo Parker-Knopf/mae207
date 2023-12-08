@@ -16,6 +16,8 @@ sendData('S','');
 pause(1);
 load('calibration_values','hSaved');
 moveSense(hSaved);
+
+data = [0;0;0;0];
 while cont    
     % States
     states = ["M1", "M2", "M3", "M4", "E"];
@@ -45,7 +47,7 @@ while cont
 
     senseCounts = 0;
     i = 0;
-
+    
     while notPressed 
 %%%%%%%%%%%%%%%%%%%% control loop for calibration %%%%%%%%%%%%%%%%%%%%%%%%
         i = i+1;
@@ -76,17 +78,17 @@ while cont
         %fprintf("senseCounts:%f\n",senseCounts); 
         scale = .35; % [mm/count] 
         d = scale*senseCounts; % conversion into [mm]
-        h = zeros(4,1);
+        % h = zeros(4,1);
     
         %%%%%%%%% distance to obstacles %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        h(motorNum) = d;  
+        % h(motorNum) = d;  
         %senseVals = d + hSaved(motorNum);
 
-        data = h + hSaved;
+        data(motorNum) = d + hSaved(motorNum);
 
         if ButtonStates.A == 1
             notPressed = false;
-            hSaved(motorNum) = d;
+            hSaved(motorNum) = data(motorNum);
         end
         
         moveSense(data);

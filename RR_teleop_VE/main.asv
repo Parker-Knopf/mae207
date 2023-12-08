@@ -1,7 +1,7 @@
 %% main function - TO RUN
 clc;clear;close all
 %% run the VE_setup script 
-scenario = 4;
+scenario = 3;
 [x_VE_lim,y_VE_lim,obs,target,geometry] = VE_setup(scenario);
 %% create figure object for visualization 
 figure 
@@ -12,11 +12,11 @@ ax2 = axes(tab1);
 
 %% test IK function and check collision with teleoperated input 
 
-thres = 1.5; % threshold around obstacle
+thres = 1; % threshold around obstacle
 
 % initial configuration %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 tip_position_init = [x_VE_lim/2;geometry(1)+geometry(2)];
-joint_values_init = inverseKinematics_RR(geometry,tip_position_init);
+joint_values_init = inverseKinematics_RR(geometry,tip_position_init,scenario);
 link_shape = getLinkBoundary_RR(geometry,joint_values_init);
 d = dist2Obstacle(link_shape,obs,thres);
 [ax1,camera_target] = plotVE(geometry,link_shape,target,obs,thres,d,joint_values_init,ax1);
@@ -66,10 +66,17 @@ use_forwardKinematics = false;
 tip_position = tip_position_init;
 joint_values = joint_values_init;
 link_quadrant = [];
+time_out      = 120;
 
 % control loop for operation
 tic;
 for i = 1:t_end
+
+    % time out 
+    % if toc >= time_out
+    %     fprintf("timed out...\n")
+    %     break
+    % end 
 
     State = myController.GetState();
     ButtonStates = ButtonStateParser(State.Gamepad.Buttons); % Put this into a structure
@@ -144,36 +151,40 @@ for i = 1:t_end
             % cap minimal tip movement as well? 
             tip_position = [target_x; target_y] + tip_position;
         else
-            % cap minimal joint movement at 5 deg
+            % cap minimal joint movement at 0.5 deg
             djoint = 0;
             if target_x ~= 0
-                djoint = sign(target_x/100)*max(abs(target_x/100),deg2rad(0.1));
+                djoint = sign(target_x/100)*max(abs(target_x/100),deg2rad(0.5));
             end
             % move either joint 1 or joint 2 depending on up/down button pressed
             if ButtonStates.DPadUp 
                 joint_values(2) = -djoint + joint_values(2);
+                joint_values(2) = wrapTo2Pi(joint_values(2));
             end 
             if ButtonStates.DPadDown
                 joint_values(1) = -djoint + joint_values(1);
+                joint_values(1) = wrapTo2Pi(joint_values(1));
             end
         end 
        
         % do kinematics mapping and check collision %%%%%%%%%%%%%%%%%%%%%%%
         if any(cond_idx == 1)
             if ~use_forwardKinematics
-                joint_values = inverseKinematics_RR(geometry,tip_position);
+                joint_values = inverseKinematics_RR(geometry,tip_position,scenario);
             else 
                 tip_position = forwardKinematics_RR(geometry,joint_values);
             end 
-           
-            plot(ax1,tip_position(1),tip_position(2),'ro'); hold on; 
-            plot(ax2,tip_position(1),tip_position(2),'ro'); pause(0.0001);
+            % 
+            % plot(ax1,tip_position(1),tip_position(2),'ro'); hold on; 
+            % plot(ax2,tip_position(1),tip_position(2),'ro'); pause(0.0001);
 
             [~,joint_2_position] = forwardKinematics_RR(geometry,joint_values,true);
+
+            
             violation = checkViolation(tip_position,joint_2_position,d,...
                                        link_quadrant,cond_idx);
             if violation == true
-                to
+                tip_position = stuck_position;
                 continue
             end
             cond_idx = [false false false false];
@@ -184,7 +195,7 @@ for i = 1:t_end
         % update tip position/joint values depending on the kinematics
         % scheme %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         if ~use_forwardKinematics
-            [joint_values,tip_position] = inverseKinematics_RR(geometry,tip_position);
+            [joint_values,tip_position] = inverseKinematics_RR(geometry,tip_position,scenario);
         else
             tip_position = forwardKinematics_RR(geometry,joint_values);
         end 
@@ -195,7 +206,7 @@ for i = 1:t_end
 
         if stop_motion ~= 0 % update position only if motion is allowed
             cond_idx = (d.dist~=0);
-            VE_limit = 0.005; % scale wrt to workspace size?
+            VE_limit = 0.5; % scale wrt to workspace size?
             R2Sim_Ratio = VE_limit/joystick_limit;
             link_quadrant(1) = checkQuadrant(joint_values(1));
             link_quadrant(2) = checkQuadrant(joint_values(2));

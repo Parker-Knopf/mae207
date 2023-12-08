@@ -1,7 +1,7 @@
 %% main function - TO RUN
 clc;clear;close all
 %% run the VE_setup script 
-scenario = 1;
+scenario = 3;
 [x_VE_lim,y_VE_lim,obs,target,geometry] = VE_setup(scenario);
 %% create figure object for visualization 
 figure 
@@ -66,10 +66,17 @@ use_forwardKinematics = false;
 tip_position = tip_position_init;
 joint_values = joint_values_init;
 link_quadrant = [];
+time_out      = 120;
 
 % control loop for operation
 tic;
 for i = 1:t_end
+
+    % time out 
+    % if toc >= time_out
+    %     fprintf("timed out...\n")
+    %     break
+    % end 
 
     State = myController.GetState();
     ButtonStates = ButtonStateParser(State.Gamepad.Buttons); % Put this into a structure
@@ -167,11 +174,13 @@ for i = 1:t_end
             else 
                 tip_position = forwardKinematics_RR(geometry,joint_values);
             end 
-           
+            % 
             % plot(ax1,tip_position(1),tip_position(2),'ro'); hold on; 
             % plot(ax2,tip_position(1),tip_position(2),'ro'); pause(0.0001);
 
             [~,joint_2_position] = forwardKinematics_RR(geometry,joint_values,true);
+
+            
             violation = checkViolation(tip_position,joint_2_position,d,...
                                        link_quadrant,cond_idx);
             if violation == true
@@ -197,7 +206,7 @@ for i = 1:t_end
 
         if stop_motion ~= 0 % update position only if motion is allowed
             cond_idx = (d.dist~=0);
-            VE_limit = 0.005; % scale wrt to workspace size?
+            VE_limit = 0.5; % scale wrt to workspace size?
             R2Sim_Ratio = VE_limit/joystick_limit;
             link_quadrant(1) = checkQuadrant(joint_values(1));
             link_quadrant(2) = checkQuadrant(joint_values(2));
