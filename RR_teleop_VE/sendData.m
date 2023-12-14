@@ -5,7 +5,7 @@ function sendData(type, msg)
     % disp(package);
 
     baud = 115600;
-    comun = serialport("COM6", baud);
+    comun = serialport("COM3", baud);
     write(comun, package, "string")
 end
 

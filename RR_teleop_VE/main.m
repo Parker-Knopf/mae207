@@ -1,7 +1,11 @@
 %% main function - TO RUN
 clc;clear;close all
 %% run the VE_setup script 
-scenario = 2;
+scenario = 3;
+test_case = 'training';
+% test_case = 'full_visual';
+% test_case = 'limited_visual_no_haptics';
+% test_case = 'limited_visual_haptics';
 [x_VE_lim,y_VE_lim,obs,target,geometry] = VE_setup(scenario);
 %% create figure object for visualization 
 figure 
@@ -225,6 +229,9 @@ DATA.task_time = toc;
 
 % save the scenario
 DATA.scenario = scenario;
+
+% save the test case
+DATA.test_case = test_case;
 
 % saving data 
 cd('DATA_COLLECTION\')
